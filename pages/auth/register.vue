@@ -75,7 +75,7 @@ watch(form.data, () => {
   <div class="auth-container">
     <div class="title">
       <h2 class="py-0">Admin Register</h2>
-      <p class="pt-0">Add your personal information to continue.</p>
+      <p class="pt-0">Ajouter vos informations personnelles.</p>
     </div>
 
     <form class="form" @submit.prevent="handleLogin">
@@ -98,14 +98,14 @@ watch(form.data, () => {
       </div>
 
       <div class="input-wrapper">
-        <label for="password">Password</label>
+        <label for="password">Mot de Passe</label>
         <v-text-field
           :error-messages="form.errors.password"
           v-model="form.data.password"
           @change="form.validateField('password')"
           id="password"
           :type="showPassword ? 'text' : 'password'"
-          placeholder="Password"
+          placeholder="Mot de Passe"
           variant="outlined"
           density="compact"
           class="py-1"
@@ -118,11 +118,11 @@ watch(form.data, () => {
       </div>
 
       <div class="input-wrapper pb-4">
-        <label for="confirmpassword">Confirm Password</label>
+        <label for="confirmpassword">Confirmation Mot de Passe</label>
         <v-text-field
           id="confirmpassword"
           :type="showPassword ? 'text' : 'password'"
-          placeholder="Confirm Your password"
+          placeholder="Confirmation Mot de Passe"
           :error-messages="form.errors.password_confirmation"
           v-model="form.data.password_confirmation"
           @change="form.validateField('password_confirmation')"
@@ -152,13 +152,13 @@ watch(form.data, () => {
         class="text-none"
         size="large"
       >
-        Register
+        S'enregistrer
       </v-btn>
     </form>
 
     <div class="end">
       <p>
-        Don't have account ? <nuxt-link to="/auth/login">Sign In</nuxt-link>
+        Vous avez deja un compte ? <nuxt-link to="/auth/login">Connectez-vous</nuxt-link>
       </p>
     </div>
   </div>

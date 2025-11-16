@@ -42,16 +42,14 @@ const accountBalance = ref(0);
 // Navigation items
 const navigationItems: NavigationItem[] = [
   { title: "Accueil", icon: "mdi-home", to: "/" },
-  { title: "Mes Paris", icon: "mdi-chart-line", to: "/bets" },
+  { title: "Paris", icon: "mdi-chart-line", to: "/bets" },
+  { title: "utilisateurs", icon: "mdi-account-group", to: "/users" },
   { title: "Transactions", icon: "mdi-credit-card", to: "/transactions" },
-  { title: "Paramètres", icon: "mdi-cog", to: "/settings" },
+  { title: "Params", icon: "mdi-cog", to: "/settings" },
 ];
 
 // Payment methods
-const paymentMethods = [
-  "Orange Money",
-  "Mobile Money",
-];
+const paymentMethods = ["Orange Money", "Mobile Money"];
 
 // Notifications
 const notifications = ref<Notification[]>([

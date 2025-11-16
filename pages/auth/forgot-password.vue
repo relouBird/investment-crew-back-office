@@ -87,8 +87,8 @@ const handleLogin = async () => {
 <template>
   <div class="auth-container">
     <div class="title">
-      <h2>Forgot password!</h2>
-      <p>Recover your credentials here.</p>
+      <h2>Forgot Password!</h2>
+      <p>Retrouvez votre mot de passe.</p>
     </div>
     <form class="form" @submit.prevent="handleLogin">
       <div v-if="otpState == 'step1'" class="">
@@ -179,18 +179,18 @@ const handleLogin = async () => {
       >
         {{
           otpState == "step1"
-            ? "Verify Now"
+            ? "Verifier Maintenant"
             : otpState == "step2"
-            ? "Verify OTP"
-            : "Change Password"
+            ? "Verification OTP"
+            : "Confirmer"
         }}
       </v-btn>
     </form>
 
     <div class="end">
       <p>
-        Already have account ?
-        <nuxt-link to="/auth/login">Connect now</nuxt-link>
+        Avez-vous deja un compte ?
+        <nuxt-link to="/auth/login">Connectez-vous</nuxt-link>
       </p>
     </div>
   </div>

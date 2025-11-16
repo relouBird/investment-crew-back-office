@@ -9,6 +9,7 @@ export type RegisterCredentialType = {
   email: string;
   password: string;
   password_confirmation: string;
+  type : string;
 };
 
 export type RegisterVerificationType = {

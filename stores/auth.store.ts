@@ -1,4 +1,5 @@
 import type { AxiosResponse } from "axios";
+import { USER_TYPE } from "~/constants/user.constant";
 import useAuthService from "~/services/auth.service";
 import type {
   LoginCredentialType,
@@ -39,6 +40,7 @@ const useAuthStore = defineStore("auth-store", {
     getIdentifier: (state) => state.identifier,
   },
   actions: {
+    // Permet de se connecter
     async login(payload: LoginCredentialType) {
       // garde d'abord les données utiles pour le login dans le state
       this.identifier = payload.email;
@@ -65,12 +67,19 @@ const useAuthStore = defineStore("auth-store", {
       return response;
     },
 
+    // Permet de creer son compte
     async register(payload: RegisterCredentialType) {
+      const payloadReloaded: RegisterCredentialType = {
+        email: payload.email,
+        password: payload.password,
+        password_confirmation: payload.password_confirmation,
+        type: USER_TYPE.ADMIN,
+      };
       this.identifier = payload.email;
 
       console.log("identifier =>", this.identifier);
 
-      let response: AxiosResponse = await service.register(payload);
+      let response: AxiosResponse = await service.register(payloadReloaded);
 
       if (response.status == 200 || response.status == 201) {
         let data = response.data as UsersRegisterResponse;

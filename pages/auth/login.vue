@@ -6,7 +6,7 @@ import type { LoginCredentialType } from "~/types/user.type";
 // Définir le layout à utiliser
 definePageMeta({
   layout: "auth",
-  middleware: "auth-default"
+  middleware: "auth-default",
 });
 
 // Meta tags
@@ -67,8 +67,8 @@ watch(form.data, () => {
 <template>
   <div class="auth-container">
     <div class="title">
-      <h2>Welcome Back!</h2>
-      <p>Login with your information to continue.</p>
+      <h2>Hey, Admin!</h2>
+      <p>Connectez-vous avec vos informations</p>
     </div>
 
     <form class="form" @submit.prevent="handleLogin">
@@ -91,14 +91,14 @@ watch(form.data, () => {
       </div>
 
       <div class="input-wrapper pb-4">
-        <label for="password">Password</label>
+        <label for="password">Mot de Passe</label>
         <v-text-field
           :error-messages="form.errors.password"
           v-model="form.data.password"
           @change="form.validateField('password')"
           id="password"
           :type="showPassword ? 'text' : 'password'"
-          placeholder="Password"
+          placeholder="Mot de Passe"
           variant="outlined"
           density="compact"
           class="py-1"
@@ -126,20 +126,20 @@ watch(form.data, () => {
         class="text-none"
         size="large"
       >
-        Login
+        Connecter
       </v-btn>
       <div class="d-flex justify-end pt-1">
         <nuxt-link
           to="/auth/forgot-password"
           class="text-decoration-none text-subtitle-1 text-primary"
-          >forgot password?</nuxt-link
+          >mot de passe oublié?</nuxt-link
         >
       </div>
     </form>
 
     <div class="end">
       <p>
-        Dont't have account ? <nuxt-link to="/auth/register">Sign Up</nuxt-link>
+        Vous n'avez pas de compte? <nuxt-link to="/auth/register">Enregistrez-vous</nuxt-link>
       </p>
     </div>
   </div>
