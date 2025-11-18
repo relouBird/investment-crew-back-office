@@ -31,7 +31,7 @@ export default function axiosBuilder() {
       delete config.headers["Content-Type"];
     }
 
-    if (!config.url?.includes("auth")) {
+    if (!config.url?.includes("auth") || config.url?.includes("logout")) {
       const authStore = useAuthStore();
       // console.log("token =>", authStore.access_token?.slice(0, 10));
       config.headers["Authorization"] = `Bearer ${authStore.access_token}`;
@@ -71,6 +71,13 @@ export default function axiosBuilder() {
           : "Nothing to Handle...",
         visible: true,
       });
+
+      if (errorParticularity.details?.includes("token is expired")) {
+        navigateTo("/auth/login");
+      }
+      if (errorParticularity.error?.includes("token is expired")) {
+        navigateTo("/auth/login");
+      }
 
       return error.response;
 
