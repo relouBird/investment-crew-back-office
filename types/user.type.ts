@@ -9,7 +9,7 @@ export type RegisterCredentialType = {
   email: string;
   password: string;
   password_confirmation: string;
-  type : string;
+  type: string;
 };
 
 export type RegisterVerificationType = {
@@ -59,11 +59,14 @@ export type UserMetaData = {
   email: string;
   phone: string;
   country: string;
+  status: string;
   twoFactorEnabled: boolean;
   notifications: NotificationsType;
+  balance: number;
+  totalInvested: number;
+  profitLoss: number;
   [key: string]: any; // Index signature pour permettre des propriétés supplémentaires
 };
-
 
 export type User = {
   id: string;
@@ -79,6 +82,8 @@ export type User = {
   created_at: string;
   updated_at: string;
 };
+
+export interface UserDetails extends UserMetaData, User {}
 
 type Session = {
   access_token: string;

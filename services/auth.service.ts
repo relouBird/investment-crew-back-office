@@ -34,6 +34,15 @@ export default function useAuthService(): ServiceProps {
   };
 
   /**
+   * Se deconnecter...
+   */
+  const logout = async (): Promise<AxiosResponse> => {
+    return await request(`/auth/logout`, {
+      method: "post",
+    });
+  };
+
+  /**
    * Ceci permet d'envoyer un email au user permet de reset son mot de passe
    */
   const sendOTP = async (payload: string): Promise<AxiosResponse> => {
@@ -106,14 +115,30 @@ export default function useAuthService(): ServiceProps {
     });
   };
 
+  // Partie Admin...
+  // ---------------------------------------------
+
+  /**
+   * Recuperer tout les utiisateurs...
+   */
+  const fetch = async (query = {}): Promise<AxiosResponse> => {
+    return await request(`/admin/users`, {
+      method: "get",
+      query,
+    });
+  };
+
   return {
     register,
     login,
+    logout,
     update,
     verifyOTP,
     sendOTP,
     resendOTP,
     resetPassword,
     changePassword,
+    // Partie admin
+    fetch,
   };
 }
