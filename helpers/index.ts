@@ -3,6 +3,16 @@ export const blank = (value: any) => {
   return Array.isArray(value) && value.length === 0;
 };
 
+export const isObject = (obj: any) =>
+  obj !== null && !!obj && typeof obj === "object" && !Array.isArray(obj);
+
+export const getIdForRequest = (
+  model: any,
+  primaryKey: string = "id"
+): number | string => {
+  return isObject(model) ? model[primaryKey] : model;
+};
+
 export const formatCurrency = (
   amount: number,
   isCurrency: boolean = true
@@ -59,7 +69,7 @@ export const formatAmount = (
   amount: any,
   options = {
     separator: "",
-    currency: "FCFA",
+    currency: "XAF",
   }
 ) => {
   let { currency, separator } = options;
