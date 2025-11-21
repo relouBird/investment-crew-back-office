@@ -1,8 +1,15 @@
 <script setup lang="ts">
+// import useBetApiStore from '~/stores/bet-api.store';
+// import useBetStore from '~/stores/bet.store';
+
 definePageMeta({
   layout: "default",
   middleware: ["auth"],
 });
+
+// // Stores
+// const betStore = useBetStore();
+// const betApiStore = useBetApiStore();
 
 const selectedTab = ref("active");
 
@@ -55,7 +62,7 @@ const completedBets = [
           <v-btn
             color="primary"
             prepend-icon="mdi-plus"
-            @click="$router.push('/dashboard/bets/new')"
+            @click="$router.push('/bets/new')"
           >
             Nouveau Pari
           </v-btn>
