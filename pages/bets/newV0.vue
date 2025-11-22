@@ -1,18 +1,35 @@
 <script lang="ts" setup>
 import useBetApiStore from "~/stores/bet-api.store";
-import type {  TeamModel } from "~/types/api-bet.type";
+import type { MatchModel } from "~/types/api-bet.type";
 
 // Stores
 const betApiStore = useBetApiStore();
 
 // Valeurs réactives
 const competitions = computed(() => betApiStore.getCompetitions);
-const teams = computed(() => betApiStore.getTeams ?? []);
+const matches = computed(() => betApiStore.getMatches ?? []);
 const selectedCompetition = computed(() => betApiStore.selectedCompetition);
-const selectedTeams = ref<TeamModel[]>([]);
+const selectedMatch = computed(() => betApiStore.selectedMatch);
+
+const matchesByDate = computed(() => {
+  const grouped: Record<string, MatchModel[]> = {};
+  matches.value.forEach((match) => {
+    const date = new Date(match.utcDate).toLocaleDateString("fr-FR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    if (!grouped[date]) {
+      grouped[date] = [];
+    }
+    grouped[date].push(match);
+  });
+  return grouped;
+});
 
 const isLoadingCompetitions = ref<boolean>(false);
-const isLoadingTeams = ref<boolean>(false);
+const isLoadingMatches = ref<boolean>(false);
 const openModal = ref<boolean>(false);
 
 // Chargement des compétitions
@@ -28,21 +45,21 @@ const loadCompetitions = async () => {
 };
 
 // Chargement des matchs d'une compétition
-const loadTeams = async (competitionId: number) => {
+const loadMatches = async (competitionId: number) => {
   try {
-    isLoadingTeams.value = true;
+    isLoadingMatches.value = true;
     // Appelle ta méthode du store pour charger les matchs
-    await betApiStore.fetchTeamsCompetition(competitionId);
+    await betApiStore.fetchMatchsCompetition(competitionId);
   } catch (e) {
     console.error("Erreur lors du chargement des matchs:", e);
   } finally {
-    isLoadingTeams.value = false;
+    isLoadingMatches.value = false;
   }
 };
 
 // Ouvre la modal...
-const handleClick = () => {
-  if (selectedTeams.value.length == 2) {
+const handleClick = (match: MatchModel) => {
+  if (match) {
     openModal.value = true;
   }
 };
@@ -64,7 +81,7 @@ watch(
   () => selectedCompetition.value,
   (newCompetition) => {
     if (newCompetition) {
-      loadTeams(newCompetition.id);
+      loadMatches(newCompetition.id);
     }
   }
 );
@@ -84,34 +101,16 @@ watch(
         Retour aux compétitions
       </v-btn>
 
-      <div class="d-flex justify-space-between align-end">
-        <div>
-          <h1 class="text-h4 font-weight-bold mb-2">
-            {{
-              selectedCompetition ? selectedCompetition.name : "Créer un pari"
-            }}
-          </h1>
-          <p class="text-grey-darken-1">
-            {{
-              selectedCompetition
-                ? "Sélectionnez un match pour parier"
-                : "Choisissez une compétition pour commencer"
-            }}
-          </p>
-        </div>
-
-        <v-btn
-          v-if="selectedTeams.length == 2"
-          color="primary"
-          prepend-icon="mdi-plus"
-          @click="handleClick"
-          rounded="lg"
-          elevation="0"
-          class="mb-4"
-        >
-          Creer pari
-        </v-btn>
-      </div>
+      <h1 class="text-h4 font-weight-bold mb-2">
+        {{ selectedCompetition ? selectedCompetition.name : "Créer un pari" }}
+      </h1>
+      <p class="text-grey-darken-1">
+        {{
+          selectedCompetition
+            ? "Sélectionnez un match pour parier"
+            : "Choisissez une compétition pour commencer"
+        }}
+      </p>
     </div>
 
     <!-- Liste des compétitions -->
@@ -124,14 +123,14 @@ watch(
 
     <!-- Liste des matchs -->
     <div v-else>
-      <BetTeamsTable
-        :teams="teams"
-        :selected-teams="selectedTeams"
-        :is-loading="isLoadingTeams"
+      <BetMatchesTable
+        :matches="matchesByDate"
+        :is-loading="isLoadingMatches"
+        v-on:match-click="handleClick"
       />
     </div>
 
-    <BetCreateDialog :selected-teams="selectedTeams" v-model="openModal" />
+    <BetCreateDialogV0 :match="selectedMatch" v-model="openModal" />
   </div>
 </template>
 

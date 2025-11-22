@@ -76,6 +76,19 @@ export default function useBetService(): ServiceProps {
   };
 
   /**
+   * Récupérer toutes les equipes d'une competition
+   */
+  const getTeamsCompetition = async (
+    id: string,
+    query?: Record<string, any>
+  ): Promise<AxiosResponse> => {
+    return await request(`/admin/bets/competitions/${id}/teams`, {
+      method: "get",
+      params: query,
+    });
+  };
+
+  /**
    * Récupérer tous les details d'un match
    */
   const getMatch = async (
@@ -94,6 +107,7 @@ export default function useBetService(): ServiceProps {
     find,
     getCompetitions,
     getMatchsCompetition,
+    getTeamsCompetition,
     getMatch,
   };
 }

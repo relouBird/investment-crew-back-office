@@ -138,6 +138,10 @@ export const formatDate = (
       month: "short",
       year: "numeric",
     },
+    "DD MMM": {
+      day: "2-digit",
+      month: "short",
+    },
     "DD MMM YY": {
       day: "numeric",
       month: "short",

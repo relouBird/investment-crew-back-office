@@ -21,6 +21,22 @@ export type CompetitionType = {
   emblem: string | null;
 };
 
+export type SeasonType = {
+  id: number;
+  startDate: string;
+  endDate: string;
+  currentMatchday: number;
+  winner: string | null;
+};
+
+export type PlayerType = {
+  id: number;
+  name: string;
+  position: string;
+  dateOfBirth: string | Date;
+  nationality: string;
+};
+
 export type CompetitionModel = {
   id: number;
   area: AreaType;
@@ -43,13 +59,7 @@ export type CompetitionModel = {
 export type MatchModel = {
   area: AreaType;
   competition: CompetitionType;
-  season: {
-    id: number;
-    startDate: string;
-    endDate: string;
-    currentMatchday: number;
-    winner: string | null;
-  };
+  season: SeasonType;
   id: number;
   utcDate: string;
   status: string;
@@ -77,6 +87,44 @@ export type MatchModel = {
   referees: any[]; // Tu peux typer plus tard si l’API renvoie des arbitres
 };
 
+export type TeamModel = {
+  area: AreaType;
+  id: number;
+  name: string;
+  shortName: string;
+  tla: string;
+  crest: string; // Image ou drapeau du club...
+  address: string;
+  website: string;
+  founded: number;
+  clubColors: string;
+  venue: string;
+  runningCompetitions: CompetitionType[];
+  coach: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    name: string;
+    dateOfBirth: string | Date;
+    nationality: string;
+    contract: {
+      start: string | Date;
+      until: string | Date;
+    };
+  };
+  squad: PlayerType[];
+  staff: [];
+  lastUpdated: string | Date;
+};
+
+export interface ApiFootballCompetitionResponse {
+  count: number;
+  filter: {
+    client: string;
+  };
+  competitions: CompetitionModel[];
+}
+
 export interface BetModel {
   id?: number | string;
   created_at: string;
@@ -91,6 +139,11 @@ export interface ApiFootballCompetitionResponse {
 export interface ApiFootballMatchsResponse {
   message: string;
   data: MatchModel[];
+}
+
+export interface ApiFootballTeamsResponse {
+  message: string;
+  data: TeamModel[];
 }
 
 export interface ApiFootballMatchResponse {

@@ -31,7 +31,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     defaults: {
       VCard: {
         VCardTitle: {
-          style: "font-family: Manrope; font-weight: 700;",
+          style: "font-family: 'Montserrat'; font-weight: 700;",
         },
       },
     },
