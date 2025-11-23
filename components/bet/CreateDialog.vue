@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from "vue";
 import type {
-  BetCreationData,
+  BetModel,
   BetTeamType,
   TeamModel,
 } from "~/types/api-bet.type";
@@ -24,7 +24,7 @@ const betStore = useBetStore();
 // Emits
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];
-  confirm: [betData: BetCreationData];
+  confirm: [betData: BetModel];
 }>();
 
 // Données réactives
@@ -93,7 +93,7 @@ const confirmBet = () => {
     return;
   }
 
-  const betData: BetCreationData = {
+  const betData: BetModel = {
     id: Date.now(),
     score: otpCode.value.split("").join("-"),
     winner: winner.value,

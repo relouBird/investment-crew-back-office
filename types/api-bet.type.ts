@@ -145,22 +145,16 @@ export interface ApiFootballMatchResponse {
   data: MatchModel;
 }
 
-// PArtie pari simplement parlant
-export interface BetModel {
-  id?: number | string;
-  created_at: string;
-  match_id: number;
-}
+// Partie pari simplement parlant
 
-// Types
 export interface BetTeamType {
   name: string;
   crest: string;
   tla: string;
 }
 
-export interface BetCreationData {
-  id: number | string;
+export interface BetModel {
+  id?: number | string;
   score: string;
   winner: string;
   homeTeam: BetTeamType;
@@ -169,6 +163,7 @@ export interface BetCreationData {
   end_at: string;
   winPercentage: number;
   lossPercentage: number;
+  created_at?: string;
   isActive: boolean;
   isEnded: boolean;
 }

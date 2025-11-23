@@ -14,11 +14,11 @@ const props = defineProps<Props>()
 // Emits
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
-  'confirm': [betData: BetCreationData]
+  'confirm': [betData: BetModel]
 }>()
 
 // Types
-interface BetCreationData {
+interface BetModel {
   matchId: number
   winPercentage: number
   lossPercentage: number
@@ -87,7 +87,7 @@ const confirmBet = () => {
     return
   }
 
-  const betData: BetCreationData = {
+  const betData: BetModel = {
     matchId: props.match.id,
     winPercentage: winPercentage.value,
     lossPercentage: lossPercentage.value,

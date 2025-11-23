@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import useBetService from "~/services/bet.service";
-import type { BetCreationData, BetModel } from "~/types/api-bet.type";
+import type { BetModel } from "~/types/api-bet.type";
 
 interface State {
   selected: BetModel | null;
   items: BetModel[];
-  protos: BetCreationData[];
+  protos: BetModel[];
   count: number;
 }
 
@@ -43,7 +43,7 @@ const useBetStore = defineStore("bet-store", {
       return response;
     },
 
-    addProtos(proto: BetCreationData) {
+    addProtos(proto: BetModel) {
       this.protos.push(proto);
     },
   },
