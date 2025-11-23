@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from "vue";
-import type {
-  BetModel,
-  BetTeamType,
-  TeamModel,
-} from "~/types/api-bet.type";
+import type { BetModel, BetTeamType, TeamModel } from "~/types/api-bet.type";
 import { PercentageIcon } from "vue-tabler-icons";
 import type { DatePropsInterface } from "~/types";
 import { generateTime } from "~/helpers/bet-helper";
@@ -55,6 +51,8 @@ const lossPercentage = ref<number>(10);
 const isActive = ref<boolean>(true);
 const isEnded = ref<boolean>(false);
 
+const isLoading = ref<boolean>(false);
+
 // Validation
 const errors = ref<string[]>([]);
 
@@ -88,19 +86,18 @@ const validateForm = (): boolean => {
 };
 
 // Confirmer la création du pari
-const confirmBet = () => {
+const confirmBet = async () => {
   if (props.selectedTeams.length != 2 || !validateForm()) {
     return;
   }
 
   const betData: BetModel = {
-    id: Date.now(),
     score: otpCode.value.split("").join("-"),
     winner: winner.value,
     homeTeam: homeTeam.value,
     awayTeam: awayTeam.value,
     start_at: start_at.value,
-    end_at: start_at.value,
+    end_at: end_at.value,
     winPercentage: winPercentage.value,
     lossPercentage: lossPercentage.value,
     isActive: isActive.value,
@@ -108,8 +105,16 @@ const confirmBet = () => {
   };
 
   emit("confirm", betData);
-  betStore.addProtos(betData);
-  closeDialog();
+  try {
+    isLoading.value = true;
+    await betStore.create(betData);
+  } catch (error) {
+    console.log("error ==>", error);
+  } finally {
+    isLoading.value = false;
+    closeDialog();
+    navigateTo("/bets");
+  }
 };
 
 // Fermer le dialog
@@ -431,6 +436,7 @@ watch(
           color="primary"
           variant="flat"
           @click="confirmBet"
+          :loading="isLoading"
           size="large"
           rounded="lg"
         >

@@ -50,6 +50,15 @@ export default function useBetService(): ServiceProps {
     });
   };
 
+  /* Récupérer un produit spécifique
+   */
+  const remove = async (bet: string): Promise<AxiosResponse> => {
+
+    return await request(`/admin/bets/${bet}`, {
+      method: "delete",
+    });
+  };
+
   /**
    * Récupérer toutes les competitions
    */
@@ -105,6 +114,7 @@ export default function useBetService(): ServiceProps {
     create,
     update,
     find,
+    remove,
     getCompetitions,
     getMatchsCompetition,
     getTeamsCompetition,

@@ -12,35 +12,43 @@ definePageMeta({
 const betStore = useBetStore();
 
 const betsActive = computed(() => {
-  let datas = betStore.getPrototypes;
+  let datas = betStore.getBets;
   let bets: BetModel[] = [];
 
-  datas.forEach((bet) => {
-    const now = new Date();
-    const endDate = new Date(bet.end_at);
-    if (now < endDate) {
-      bets.push(bet);
-    }
-  });
+  if (datas.length) {
+    datas.forEach((bet) => {
+      const now = new Date();
+      const endDate = new Date(bet.end_at);
+      if (now < endDate) {
+        bets.push(bet);
+      }
+    });
+  }
 
   return bets;
 });
 
 const betsPast = computed(() => {
-  let datas = betStore.getPrototypes;
+  let datas = betStore.getBets;
   let bets: BetModel[] = [];
 
-  datas.forEach((bet) => {
-    const now = new Date();
-    const endDate = new Date(bet.end_at);
-    if (now > endDate) {
-      bets.push(bet);
-    }
-  });
+  if (datas.length) {
+    datas.forEach((bet) => {
+      const now = new Date();
+      const endDate = new Date(bet.end_at);
+      if (now > endDate) {
+        bets.push(bet);
+      }
+    });
+  }
 
   return bets;
 });
 const isLoading = ref<boolean>(false);
+const actions = ref<{ action: string; bet: BetModel | undefined }>({
+  action: "",
+  bet: undefined,
+});
 
 const selectedTab = ref("active");
 
@@ -69,18 +77,26 @@ const completedBets = [
 const loadBets = async () => {
   try {
     isLoading.value = true;
-    setTimeout(() => {
-      isLoading.value = false;
-    }, 3000);
+    await betStore.fetch();
   } catch (error) {
   } finally {
-    // isLoading.value = false;
+    isLoading.value = false;
   }
 };
 
 onMounted(async () => {
   await loadBets();
 });
+
+watch(
+  () => actions.value,
+  (newValue) => {
+    if (newValue.action != "" && newValue.bet) {
+      console.log("actions: ", newValue.action, ", bet-id: ", newValue.bet.id);
+      betStore.selected = newValue.bet;
+    }
+  }
+);
 </script>
 
 <!-- pages/dashboard/bets.vue -->
@@ -139,11 +155,11 @@ onMounted(async () => {
 
       <v-window v-model="selectedTab">
         <v-window-item value="active">
-          <bet-items :bets="betsActive" />
+          <bet-items v-model:model-value="actions" :bets="betsActive" />
         </v-window-item>
 
         <v-window-item value="completed">
-          <bet-items :bets="betsPast" />
+          <bet-items v-model:model-value="actions" :bets="betsPast" />
         </v-window-item>
 
         <v-window-item value="users">
@@ -176,5 +192,7 @@ onMounted(async () => {
         </v-window-item>
       </v-window>
     </v-container>
+
+    <BetDeleteDialog v-model:model-value="actions.action" />
   </ui-loader>
 </template>

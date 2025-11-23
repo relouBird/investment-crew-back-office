@@ -13,7 +13,7 @@ import type { BetModel } from "~/types/api-bet.type";
 
 const betStore = useBetStore();
 
-const bets = computed(()=> betStore.getPrototypes);
+const bets = computed(()=> betStore.getBets);
 const isLoading = ref<boolean>(false);
 
 const emit = defineEmits<{

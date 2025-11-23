@@ -17,6 +17,11 @@ const emit = defineEmits<{
   "delete-bet": [bet: BetModel];
 }>();
 
+// Model v-model
+const modelValue = defineModel<{ action: string; bet: BetModel | undefined }>({
+  default: () => ({ action: "", bet: undefined }),
+});
+
 // Obtenir le statut du pari
 const getBetStatus = (bet: BetModel) => {
   if (bet.isEnded) {
@@ -83,9 +88,9 @@ function handleEndBet(bet: BetModel, event: Event) {
   emit("end-bet", bet);
 }
 
-function handleDelete(bet: BetModel, event: Event) {
-  event.stopPropagation();
-  emit("delete-bet", bet);
+async function handleDelete(bet: BetModel) {
+  console.log("bet-id =>", bet.id);
+  modelValue.value = { action: "delete", bet };
 }
 </script>
 
@@ -162,7 +167,7 @@ function handleDelete(bet: BetModel, event: Event) {
                   </v-list-item>
                   <v-divider></v-divider>
                   <v-list-item
-                    @click="handleDelete(bet, $event)"
+                    @click="handleDelete(bet)"
                     prepend-icon="mdi-delete"
                     class="text-error"
                   >
@@ -175,7 +180,7 @@ function handleDelete(bet: BetModel, event: Event) {
             <v-card-text class="pa-4">
               <!-- ID du pari -->
               <div class="text-caption text-grey-darken-1 mb-3">
-                ID: #{{ bet.id }}
+                ID: #{{ String(bet.id).split("-").slice(0, 4).join("-") }}
               </div>
 
               <!-- Équipes -->

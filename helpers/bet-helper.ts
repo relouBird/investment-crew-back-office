@@ -1,15 +1,15 @@
-export function generateTime(data?: { date: string | Date; time: string }) {
-  let date = data?.date ? new Date(data.date) : new Date();
+export function generateTime(data?: {
+  date?: string | Date;
+  time?: string;
+}): string {
+  const date = data?.date ? new Date(data.date) : new Date();
 
-  let list: number[] = [];
-
-  data?.time.split(":").forEach((t) => {
-    list.push(Number(t));
-  });
-
-  if (list.length >= 2) {
-    date.setHours(list[0], list[1] ?? 0);
+  // Si un time est fourni → extraire HH:mm[:ss]
+  if (data?.time) {
+    const [hours, minutes, seconds] = data.time.split(":").map(Number);
+    date.setHours(hours ?? 0, minutes ?? 0, seconds ?? 0);
   }
 
-  return date.toString();
+  // Retour timestamptz au format PostgreSQL
+  return date.toISOString(); // ex: "2025-11-21T08:52:10.123Z"
 }

@@ -167,3 +167,13 @@ export interface BetModel {
   isActive: boolean;
   isEnded: boolean;
 }
+
+export interface BetModelResponse {
+  message: string;
+  data: BetModel;
+}
+
+export interface BetsModelResponse {
+  message: string;
+  data: BetModel[];
+}
