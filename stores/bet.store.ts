@@ -66,6 +66,25 @@ const useBetStore = defineStore("bet-store", {
       return response;
     },
 
+    // Recuperer tous les paris...
+    async udpate() {
+      const response =
+        service.update && (await service.update(this.selected, {}));
+      if (response.status === 200 || response.status === 201) {
+        const datas = response.data as BetModelResponse;
+        let index = this.items.findIndex((u) => u.id == datas.data.id);
+
+        if (index >= 0) {
+          this.items[index] = datas.data;
+        }
+
+        console.log("bets-store-update =>", datas.data);
+      } else {
+        console.log("bets-store-update =>", this.items);
+      }
+      return response;
+    },
+
     async remove() {
       let response =
         service.remove && (await service.remove(this.selected?.id ?? "", {}));

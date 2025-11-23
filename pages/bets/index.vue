@@ -19,7 +19,7 @@ const betsActive = computed(() => {
     datas.forEach((bet) => {
       const now = new Date();
       const endDate = new Date(bet.end_at);
-      if (now < endDate) {
+      if (now < endDate && !bet.isEnded) {
         bets.push(bet);
       }
     });
@@ -38,6 +38,8 @@ const betsPast = computed(() => {
       const endDate = new Date(bet.end_at);
       if (now > endDate) {
         bets.push(bet);
+      } else if (bet.isEnded) {
+        bets.push(bet);
       }
     });
   }
@@ -45,6 +47,7 @@ const betsPast = computed(() => {
   return bets;
 });
 const isLoading = ref<boolean>(false);
+const isEditing = ref<boolean>(false);
 const actions = ref<{ action: string; bet: BetModel | undefined }>({
   action: "",
   bet: undefined,
@@ -93,6 +96,9 @@ watch(
   (newValue) => {
     if (newValue.action != "" && newValue.bet) {
       console.log("actions: ", newValue.action, ", bet-id: ", newValue.bet.id);
+      if (newValue.action == "update-session") {
+        isEditing.value = true;
+      }
       betStore.selected = newValue.bet;
     }
   }
@@ -194,5 +200,10 @@ watch(
     </v-container>
 
     <BetDeleteDialog v-model:model-value="actions.action" />
+    <BetUpdateDialog
+      :bet-selected="actions.bet"
+      v-model:model-value="isEditing"
+      v-if="actions.bet"
+    />
   </ui-loader>
 </template>

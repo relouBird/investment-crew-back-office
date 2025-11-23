@@ -70,22 +70,31 @@ const getTimeRemaining = (endDate: string) => {
 };
 
 function handleBetClick(bet: BetModel) {
-  emit("bet-click", bet);
+  console.log("bet-id =>", bet.id);
+  modelValue.value = { action: "see", bet };
 }
 
 function handleEdit(bet: BetModel, event: Event) {
-  event.stopPropagation();
-  emit("edit-bet", bet);
+  console.log("bet-id =>", bet.id);
+  modelValue.value = { action: "update-session", bet };
 }
 
 function handleToggleStatus(bet: BetModel, event: Event) {
   event.stopPropagation();
-  emit("toggle-status", bet);
+  let betInstance: BetModel = {
+    ...bet,
+    isActive: !bet.isActive,
+  };
+  modelValue.value = { action: "update-status", bet: betInstance };
 }
 
 function handleEndBet(bet: BetModel, event: Event) {
   event.stopPropagation();
-  emit("end-bet", bet);
+  let betInstance: BetModel = {
+    ...bet,
+    isEnded: true,
+  };
+  modelValue.value = { action: "update-ended", bet: betInstance };
 }
 
 async function handleDelete(bet: BetModel) {
@@ -305,9 +314,8 @@ async function handleDelete(bet: BetModel) {
             </v-card-text>
 
             <!-- Actions rapides -->
-            <v-card-actions class="pa-3 pt-0">
+            <v-card-actions class="pa-3 pt-0" v-if="!bet.isEnded">
               <v-btn
-                v-if="!bet.isEnded"
                 size="small"
                 variant="outlined"
                 color="primary"
@@ -318,7 +326,6 @@ async function handleDelete(bet: BetModel) {
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
-                v-if="!bet.isEnded"
                 size="small"
                 :color="bet.isActive ? 'warning' : 'success'"
                 variant="flat"
