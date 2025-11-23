@@ -10,3 +10,16 @@ export type EventsProps = {
   "payment:started": FunctionEventPayment | EventPayment;
   "payment:status": void;
 };
+
+
+///  Timer type
+
+export type TimeProps = {
+  date: string | Date;
+  time: string;
+};
+
+export interface DatePropsInterface {
+  start: TimeProps;
+  end: TimeProps;
+}

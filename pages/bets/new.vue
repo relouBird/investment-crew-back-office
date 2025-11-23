@@ -21,7 +21,7 @@ const loadCompetitions = async () => {
     isLoadingCompetitions.value = true;
     await betApiStore.fetchCompetitions();
   } catch (e) {
-    console.error("Erreur lors du chargement des compétitions:", e);
+    console.log("Erreur lors du chargement des compétitions:", e);
   } finally {
     isLoadingCompetitions.value = false;
   }
@@ -34,7 +34,7 @@ const loadTeams = async (competitionId: number) => {
     // Appelle ta méthode du store pour charger les matchs
     await betApiStore.fetchTeamsCompetition(competitionId);
   } catch (e) {
-    console.error("Erreur lors du chargement des matchs:", e);
+    console.log("Erreur lors du chargement des matchs:", e);
   } finally {
     isLoadingTeams.value = false;
   }
@@ -84,7 +84,7 @@ watch(
         Retour aux compétitions
       </v-btn>
 
-      <div class="d-flex justify-space-between align-end">
+      <div class="d-lg-flex justify-space-between align-end">
         <div>
           <h1 class="text-h4 font-weight-bold mb-2">
             {{

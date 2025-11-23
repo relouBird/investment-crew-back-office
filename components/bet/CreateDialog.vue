@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from "vue";
-import type { TeamModel } from "~/types/api-bet.type";
-import { CashIcon, PercentageIcon } from "vue-tabler-icons";
+import type {
+  BetCreationData,
+  BetTeamType,
+  TeamModel,
+} from "~/types/api-bet.type";
+import { PercentageIcon } from "vue-tabler-icons";
+import type { DatePropsInterface } from "~/types";
+import { generateTime } from "~/helpers/bet-helper";
+import useBetStore from "~/stores/bet.store";
 
 // Props
 interface Props {
@@ -11,23 +18,42 @@ interface Props {
 
 const props = defineProps<Props>();
 
+// Store
+const betStore = useBetStore();
+
 // Emits
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];
   confirm: [betData: BetCreationData];
 }>();
 
-// Types
-interface BetCreationData {
-  winPercentage: number;
-  lossPercentage: number;
-  isActive: boolean;
-}
-
 // Données réactives
+const otpCode = ref<string>("00");
+const winner = ref<string>("draw");
+// Equipe domicile
+const homeTeam = computed<BetTeamType>(() => {
+  return {
+    name: props.selectedTeams[0].name,
+    crest: props.selectedTeams[0].crest,
+    tla: props.selectedTeams[0].tla,
+  };
+});
+// Equipe exterieure
+const awayTeam = computed<BetTeamType>(() => {
+  return {
+    name: props.selectedTeams[1].name,
+    crest: props.selectedTeams[1].crest,
+    tla: props.selectedTeams[1].tla,
+  };
+});
+// Dates
+const dates = ref<DatePropsInterface>();
+const start_at = ref<string>("");
+const end_at = ref<string>("");
 const winPercentage = ref<number>(10);
 const lossPercentage = ref<number>(10);
 const isActive = ref<boolean>(true);
+const isEnded = ref<boolean>(false);
 
 // Validation
 const errors = ref<string[]>([]);
@@ -68,12 +94,21 @@ const confirmBet = () => {
   }
 
   const betData: BetCreationData = {
+    id: Date.now(),
+    score: otpCode.value.split("").join("-"),
+    winner: winner.value,
+    homeTeam: homeTeam.value,
+    awayTeam: awayTeam.value,
+    start_at: start_at.value,
+    end_at: start_at.value,
     winPercentage: winPercentage.value,
     lossPercentage: lossPercentage.value,
     isActive: isActive.value,
+    isEnded: isEnded.value,
   };
 
   emit("confirm", betData);
+  betStore.addProtos(betData);
   closeDialog();
 };
 
@@ -84,9 +119,12 @@ const closeDialog = () => {
 
 // Réinitialiser les valeurs par défaut
 const resetToDefaults = () => {
+  otpCode.value = "00";
+  dates.value = undefined;
   winPercentage.value = 10;
   lossPercentage.value = 10;
   isActive.value = true;
+  isEnded.value = false;
   errors.value = [];
 };
 
@@ -99,21 +137,55 @@ watch(
     }
   }
 );
+
+// Watcher pour savoir le gagnant en fonction du score
+watch(
+  () => otpCode.value,
+  (newValue) => {
+    const list: number[] = [];
+    newValue.split("").forEach((n) => {
+      list.push(Number(n));
+    });
+    if (list[0] > list[1]) {
+      winner.value = homeTeam.value.tla;
+    } else if (list[0] < list[1]) {
+      winner.value = homeTeam.value.tla;
+    } else {
+      winner.value = "draw";
+    }
+  }
+);
+
+// Watcher pour observer les differentes dates
+watch(
+  () => dates.value,
+  (newValue) => {
+    start_at.value = generateTime(newValue?.start);
+    end_at.value = generateTime(newValue?.end);
+
+    console.log("Start at : ", start_at.value);
+    console.log("End at : ", end_at.value);
+  }
+);
 </script>
 
 <template>
-  <v-dialog v-model="dialogValue" max-width="700px" persistent scrollable>
+  <v-dialog
+    v-model="dialogValue"
+    max-width="700px"
+    max-height="700px"
+    persistent
+    scrollable
+  >
     <v-card v-if="selectedTeams" rounded="lg">
       <!-- En-tête -->
       <v-card-title
         class="d-flex align-center justify-space-between bg-primary pa-4"
       >
         <div>
-          <h3 class="text-h6 font-weight-bold font-montserrat font-montserrat-500">
-            Configuration du pari
-          </h3>
-          <p class="text-caption text-white mb-0 opacity-90 font-montserrat font-montserrat-500">
-            Définissez les pourcentages globaux pour ce match
+          <h3 class="text-h6 font-weight-bold">Configuration du pari</h3>
+          <p class="text-caption text-white mb-0 opacity-90">
+            Définissez les pourcentages
           </p>
         </div>
         <v-btn
@@ -129,36 +201,48 @@ watch(
 
       <v-card-text class="pa-6">
         <!-- Informations du match -->
-        <v-sheet color="grey-lighten-4" rounded="lg" class="pa-4 mb-6">
+        <v-sheet color="grey-lighten-4" rounded="lg" class="pa-4 mb-3">
           <div class="d-flex align-center justify-space-between">
             <!-- Équipe domicile -->
             <div class="text-center" style="flex: 1">
               <v-avatar size="60" class="mb-2">
-                <v-img :src="selectedTeams[0].crest"></v-img>
+                <v-img :src="homeTeam.crest"></v-img>
               </v-avatar>
-              <div class="font-weight-bold ">{{ selectedTeams[0].name }}</div>
+              <div class="font-weight-bold">{{ homeTeam.name }}</div>
               <div class="text-caption text-grey-darken-1">
-                {{ selectedTeams[0].tla }}
+                {{ homeTeam.tla }}
               </div>
             </div>
 
             <!-- VS -->
-            <div class="text-h5 font-weight-bold text-grey-darken-1 mx-6">
-              VS
-            </div>
+            <v-sheet
+              class="text-h5 font-weight-bold bg-transparent text-grey-darken-1 mx-4"
+              max-width="200"
+            >
+              <v-otp-input
+                v-model="otpCode"
+                divider="VS"
+                length="2"
+                variant="outlined"
+              ></v-otp-input>
+            </v-sheet>
 
             <!-- Équipe extérieure -->
             <div class="text-center" style="flex: 1">
               <v-avatar size="60" class="mb-2">
-                <v-img :src="selectedTeams[1].crest"></v-img>
+                <v-img :src="awayTeam.crest"></v-img>
               </v-avatar>
-              <div class="font-weight-bold">{{ selectedTeams[1].name }}</div>
+              <div class="font-weight-bold">{{ awayTeam.name }}</div>
               <div class="text-caption text-grey-darken-1">
-                {{ selectedTeams[1].tla }}
+                {{ awayTeam.tla }}
               </div>
             </div>
           </div>
         </v-sheet>
+
+        <div class="pb-4">
+          <UiEventRangeDatePicker v-model:modelValue="dates" />
+        </div>
 
         <!-- Messages d'erreur -->
         <v-alert
@@ -298,7 +382,6 @@ watch(
           </v-col>
         </v-row>
 
-
         <v-card variant="outlined" rounded="lg" class="pa-4 border-sm">
           <div class="d-flex align-center justify-space-between">
             <div class="d-flex align-center">
@@ -344,12 +427,10 @@ watch(
           Réinitialiser
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn variant="text" @click="closeDialog"> Annuler </v-btn>
         <v-btn
           color="primary"
           variant="flat"
           @click="confirmBet"
-          append-icon="mdi-check"
           size="large"
           rounded="lg"
         >

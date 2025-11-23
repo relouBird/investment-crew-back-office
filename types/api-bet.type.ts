@@ -125,12 +125,6 @@ export interface ApiFootballCompetitionResponse {
   competitions: CompetitionModel[];
 }
 
-export interface BetModel {
-  id?: number | string;
-  created_at: string;
-  match_id: number;
-}
-
 export interface ApiFootballCompetitionResponse {
   message: string;
   data: CompetitionModel[];
@@ -149,4 +143,32 @@ export interface ApiFootballTeamsResponse {
 export interface ApiFootballMatchResponse {
   message: string;
   data: MatchModel;
+}
+
+// PArtie pari simplement parlant
+export interface BetModel {
+  id?: number | string;
+  created_at: string;
+  match_id: number;
+}
+
+// Types
+export interface BetTeamType {
+  name: string;
+  crest: string;
+  tla: string;
+}
+
+export interface BetCreationData {
+  id: number | string;
+  score: string;
+  winner: string;
+  homeTeam: BetTeamType;
+  awayTeam: BetTeamType;
+  start_at: string;
+  end_at: string;
+  winPercentage: number;
+  lossPercentage: number;
+  isActive: boolean;
+  isEnded: boolean;
 }

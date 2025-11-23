@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import useBetService from "~/services/bet.service";
-import type { BetModel } from "~/types/api-bet.type";
+import type { BetCreationData, BetModel } from "~/types/api-bet.type";
 
 interface State {
   selected: BetModel | null;
   items: BetModel[];
+  protos: BetCreationData[];
   count: number;
 }
 
@@ -16,11 +17,13 @@ const useBetStore = defineStore("bet-store", {
   state: (): State => ({
     selected: null,
     items: [],
+    protos: [],
     count: 0,
   }),
 
   getters: {
-    getUsers: (state) => state.items,
+    getBets: (state) => state.items,
+    getPrototypes: (state) => state.protos,
     getCount: (state) => state.count,
   },
 
@@ -38,6 +41,10 @@ const useBetStore = defineStore("bet-store", {
         console.log("users-store =>", this.items);
       }
       return response;
+    },
+
+    addProtos(proto: BetCreationData) {
+      this.protos.push(proto);
     },
   },
 });
