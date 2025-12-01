@@ -85,6 +85,23 @@ const useBetStore = defineStore("bet-store", {
       return response;
     },
 
+    async end() {
+      const response = service.find && (await service.find(this.selected, {}));
+      if (response.status === 200 || response.status === 201) {
+        const datas = response.data as BetModelResponse;
+        let index = this.items.findIndex((u) => u.id == datas.data.id);
+
+        if (index >= 0) {
+          this.items[index] = datas.data;
+        }
+
+        console.log("bets-store-end =>", datas.data);
+      } else {
+        console.log("bets-store-end =>", this.items);
+      }
+      return response;
+    },
+
     async remove() {
       let response =
         service.remove && (await service.remove(this.selected?.id ?? "", {}));

@@ -32,11 +32,12 @@ export default function useBetService(): ServiceProps {
     bet: string | BetModel,
     query?: Record<string, any>
   ): Promise<AxiosResponse> => {
-    const productId = getIdForRequest(bet);
+    const betId = getIdForRequest(bet);
 
-    return await request(`/admin/bets/${productId}`, {
-      method: "get",
+    return await request(`/admin/bets/${betId}/end`, {
+      method: "patch",
       params: query,
+      data: bet,
     });
   };
 
@@ -53,7 +54,6 @@ export default function useBetService(): ServiceProps {
   /* Récupérer un produit spécifique
    */
   const remove = async (bet: string): Promise<AxiosResponse> => {
-
     return await request(`/admin/bets/${bet}`, {
       method: "delete",
     });

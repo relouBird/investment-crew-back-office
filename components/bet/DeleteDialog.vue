@@ -40,6 +40,16 @@ const updateBet = async () => {
   }
 };
 
+const endBet = async () => {
+  try {
+    await betStore.end();
+  } catch (error) {
+    console.log("error ====>", error);
+  } finally {
+    emit("update:modelValue", "");
+  }
+};
+
 // watchers...
 watch(
   () => props.modelValue,
@@ -53,8 +63,10 @@ watch(
     if (newValue != undefined) {
       if (newValue == "delete") {
         await deleteBet();
-      } else if (newValue == "update-ended" || newValue == "update-status") {
+      } else if (newValue == "update-status") {
         await updateBet();
+      } else if (newValue == "update-ended") {
+        await endBet();
       }
     }
   }
@@ -66,7 +78,11 @@ watch(
     <v-dialog v-model="isActive" :max-width="300" persistent>
       <ui-custom-loader
         :title="
-          modelValue == 'delete' ? 'Suppression' : 'Mise à jour' + ' du pari...'
+          modelValue == 'delete'
+            ? 'Suppression'
+            : modelValue == 'update-ended'
+            ? 'Cloturation'
+            : 'Mise à jour' + ' du pari...'
         "
       />
     </v-dialog>

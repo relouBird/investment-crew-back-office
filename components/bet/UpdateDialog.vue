@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from "vue";
-import type { BetModel, BetTeamType, TeamModel } from "~/types/api-bet.type";
+import type { BetModel, BetTeamType } from "~/types/api-bet.type";
 import { PercentageIcon } from "vue-tabler-icons";
 import type { DatePropsInterface } from "~/types";
 import { generateTime, getTimeForDate } from "~/helpers/bet-helper";
@@ -42,7 +42,6 @@ const end_at = ref<string>(selectedBet.value.end_at);
 const winPercentage = ref<number>(selectedBet.value.winPercentage);
 const lossPercentage = ref<number>(selectedBet.value.lossPercentage);
 const isActive = ref<boolean>(selectedBet.value.isActive);
-const isEnded = ref<boolean>(selectedBet.value.isEnded);
 
 const isLoading = ref<boolean>(false);
 
@@ -96,7 +95,6 @@ const confirmBet = async () => {
       winPercentage: winPercentage.value,
       lossPercentage: lossPercentage.value,
       isActive: isActive.value,
-      isEnded: isEnded.value,
     };
 
     emit("confirm", betData.value);
@@ -132,7 +130,7 @@ watch(
     if (list[0] > list[1]) {
       winner.value = homeTeam.value.tla;
     } else if (list[0] < list[1]) {
-      winner.value = homeTeam.value.tla;
+      winner.value = awayTeam.value.tla;
     } else {
       winner.value = "draw";
     }
@@ -389,38 +387,6 @@ watch(
             <v-switch
               v-model="isActive"
               color="success"
-              hide-details
-              inset
-            ></v-switch>
-          </div>
-        </v-card>
-
-        <v-card
-          variant="outlined"
-          rounded="lg"
-          class="py-2 px-4 border-sm mt-3"
-        >
-          <div class="d-flex align-center justify-space-between">
-            <div class="d-flex align-center">
-              <v-icon
-                :color="isEnded ? 'error' : 'grey'"
-                size="large"
-                class="mr-3"
-              >
-                {{ isEnded ? "mdi-check-circle" : "mdi-cancel" }}
-              </v-icon>
-              <div>
-                <h5 class="text-subtitle-1 font-weight-bold">
-                  Cloturation du pari
-                </h5>
-                <p class="text-caption text-grey-darken-1 mb-0">
-                  {{ isEnded ? "Les paris sont achévés" : "Disponible" }}
-                </p>
-              </div>
-            </div>
-            <v-switch
-              v-model="isEnded"
-              color="error"
               hide-details
               inset
             ></v-switch>

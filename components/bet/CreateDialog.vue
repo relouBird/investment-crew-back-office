@@ -154,7 +154,7 @@ watch(
     if (list[0] > list[1]) {
       winner.value = homeTeam.value.tla;
     } else if (list[0] < list[1]) {
-      winner.value = homeTeam.value.tla;
+      winner.value = awayTeam.value.tla;
     } else {
       winner.value = "draw";
     }
