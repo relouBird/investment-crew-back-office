@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from "vue";
-import type { BetModel, BetTeamType, TeamModel } from "~/types/api-bet.type";
+import type { BetModel, BetTeamType } from "~/types/api-bet.type";
 import { PercentageIcon } from "vue-tabler-icons";
 import type { DatePropsInterface } from "~/types";
-import { generateTime } from "~/helpers/bet-helper";
+import { generateTime, getTimeForDate } from "~/helpers/bet-helper";
 import useBetStore from "~/stores/bet.store";
 
 // Props
 interface Props {
-  selectedTeams: TeamModel[];
+  betSelected: BetModel;
   modelValue: boolean;
 }
 
@@ -24,32 +24,24 @@ const emit = defineEmits<{
 }>();
 
 // Données réactives
-const otpCode = ref<string>("00");
-const winner = ref<string>("draw");
+const betData = ref<BetModel | null>(null);
+const selectedBet = computed(() => props.betSelected);
+const otpCode = ref<string>(selectedBet.value.score.split("-").join(""));
+const winner = ref<string>(selectedBet.value.winner);
 // Equipe domicile
-const homeTeam = computed<BetTeamType>(() => {
-  return {
-    name: props.selectedTeams[0].name,
-    crest: props.selectedTeams[0].crest,
-    tla: props.selectedTeams[0].tla,
-  };
-});
+const homeTeam = computed<BetTeamType>(() => selectedBet.value.homeTeam);
 // Equipe exterieure
-const awayTeam = computed<BetTeamType>(() => {
-  return {
-    name: props.selectedTeams[1].name,
-    crest: props.selectedTeams[1].crest,
-    tla: props.selectedTeams[1].tla,
-  };
-});
+const awayTeam = computed<BetTeamType>(() => selectedBet.value.awayTeam);
 // Dates
-const dates = ref<DatePropsInterface>();
-const start_at = ref<string>("");
-const end_at = ref<string>("");
-const winPercentage = ref<number>(10);
-const lossPercentage = ref<number>(10);
-const isActive = ref<boolean>(true);
-const isEnded = ref<boolean>(false);
+const dates = ref<DatePropsInterface>({
+  start: getTimeForDate(selectedBet.value.start_at),
+  end: getTimeForDate(selectedBet.value.end_at),
+});
+const start_at = ref<string>(selectedBet.value.start_at);
+const end_at = ref<string>(selectedBet.value.end_at);
+const winPercentage = ref<number>(selectedBet.value.winPercentage);
+const lossPercentage = ref<number>(selectedBet.value.lossPercentage);
+const isActive = ref<boolean>(selectedBet.value.isActive);
 
 const isLoading = ref<boolean>(false);
 
@@ -75,8 +67,8 @@ const calculateLossExample = (amount: number) => {
 const validateForm = (): boolean => {
   errors.value = [];
 
-  if (winPercentage.value < 0 || winPercentage.value > 500) {
-    errors.value.push("Le pourcentage de gain doit être entre 0% et 500%");
+  if (winPercentage.value < 0 || winPercentage.value > 100) {
+    errors.value.push("Le pourcentage de gain doit être entre 0% et 100%");
   }
   if (lossPercentage.value < 0 || lossPercentage.value > 100) {
     errors.value.push("Le pourcentage de perte doit être entre 0% et 100%");
@@ -87,33 +79,38 @@ const validateForm = (): boolean => {
 
 // Confirmer la création du pari
 const confirmBet = async () => {
-  if (props.selectedTeams.length != 2 || !validateForm()) {
-    return;
-  }
-
-  const betData: BetModel = {
-    score: otpCode.value.split("").join("-"),
-    winner: winner.value,
-    homeTeam: homeTeam.value,
-    awayTeam: awayTeam.value,
-    start_at: start_at.value,
-    end_at: end_at.value,
-    winPercentage: winPercentage.value,
-    lossPercentage: lossPercentage.value,
-    isActive: isActive.value,
-    isEnded: isEnded.value,
-  };
-
-  emit("confirm", betData);
   try {
+    if (!validateForm()) {
+      return;
+    }
+
+    betData.value = {
+      ...selectedBet.value,
+      score: otpCode.value.split("").join("-"),
+      winner: winner.value,
+      homeTeam: homeTeam.value,
+      awayTeam: awayTeam.value,
+      start_at: start_at.value,
+      end_at: end_at.value,
+      winPercentage: winPercentage.value,
+      lossPercentage: lossPercentage.value,
+      isActive: isActive.value,
+    };
+
+    emit("confirm", betData.value);
+
     isLoading.value = true;
-    await betStore.create(betData);
+
+    betStore.selected = betData.value;
+
+    console.log("get-to-updated ===>", betStore.selected);
+
+    await betStore.udpate();
   } catch (error) {
     console.log("error ==>", error);
   } finally {
     isLoading.value = false;
     closeDialog();
-    navigateTo("/bets");
   }
 };
 
@@ -121,27 +118,6 @@ const confirmBet = async () => {
 const closeDialog = () => {
   dialogValue.value = false;
 };
-
-// Réinitialiser les valeurs par défaut
-const resetToDefaults = () => {
-  otpCode.value = "00";
-  dates.value = undefined;
-  winPercentage.value = 10;
-  lossPercentage.value = 10;
-  isActive.value = true;
-  isEnded.value = false;
-  errors.value = [];
-};
-
-// Watcher pour réinitialiser quand le dialog s'ouvre
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    if (newValue) {
-      resetToDefaults();
-    }
-  }
-);
 
 // Watcher pour savoir le gagnant en fonction du score
 watch(
@@ -182,7 +158,7 @@ watch(
     persistent
     scrollable
   >
-    <v-card v-if="selectedTeams" rounded="lg">
+    <v-card rounded="lg">
       <!-- En-tête -->
       <v-card-title
         class="d-flex align-center justify-space-between bg-primary pa-4"
@@ -387,7 +363,7 @@ watch(
           </v-col>
         </v-row>
 
-        <v-card variant="outlined" rounded="lg" class="pa-4 border-sm">
+        <v-card variant="outlined" rounded="lg" class="py-2 px-4 border-sm">
           <div class="d-flex align-center justify-space-between">
             <div class="d-flex align-center">
               <v-icon
@@ -425,11 +401,10 @@ watch(
         <v-btn
           variant="outlined"
           color="primary"
-          @click="resetToDefaults"
+          @click="closeDialog"
           rounded="lg"
-          prepend-icon="mdi-refresh"
         >
-          Réinitialiser
+          Annuler
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
@@ -440,7 +415,7 @@ watch(
           size="large"
           rounded="lg"
         >
-          Créer le pari
+          Mettre à jour
         </v-btn>
       </v-card-actions>
     </v-card>

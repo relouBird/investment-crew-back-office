@@ -1,23 +1,23 @@
 import type { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
 import { notify } from "~/helpers/notifications";
-import useBetService from "~/services/bet.service";
+import useUserBetService from "~/services/user-bet.service";
 import type {
-  BetModel,
-  BetModelResponse,
-  BetsModelResponse,
+  UserBetModel,
+  UserBetModelResponse,
+  UserBetsModelResponse,
 } from "~/types/api-bet.type";
 
 interface State {
-  selected: BetModel | null;
-  items: BetModel[];
+  selected: UserBetModel | null;
+  items: UserBetModel[];
   count: number;
 }
 
 // le service qui gère les requetes
-const service = useBetService();
+const service = useUserBetService();
 
-const useBetStore = defineStore("bet-store", {
+const useUserBetStore = defineStore("users-bet-store", {
   persist: true,
   state: (): State => ({
     selected: null,
@@ -26,18 +26,18 @@ const useBetStore = defineStore("bet-store", {
   }),
 
   getters: {
-    getBets: (state) => state.items,
+    getUsersBets: (state) => state.items,
     getCount: (state) => state.count,
   },
 
   actions: {
     // creer un pari
-    async create(bet: BetModel) {
+    async create(bet: UserBetModel) {
       const response: AxiosResponse =
         service.create && (await service.create(bet));
 
       if (response.status === 201) {
-        let datas = response.data as BetModelResponse;
+        let datas = response.data as UserBetModelResponse;
         this.items.push(datas.data);
 
         notify({
@@ -55,7 +55,7 @@ const useBetStore = defineStore("bet-store", {
       const response = service.fetch && (await service.fetch({}));
       if (response.status === 200) {
         this.items = [];
-        const datas = response.data as BetsModelResponse;
+        const datas = response.data as UserBetsModelResponse;
         this.items = datas.data;
         this.count = this.items.length;
 
@@ -71,7 +71,7 @@ const useBetStore = defineStore("bet-store", {
       const response =
         service.update && (await service.update(this.selected, {}));
       if (response.status === 200 || response.status === 201) {
-        const datas = response.data as BetModelResponse;
+        const datas = response.data as UserBetModelResponse;
         let index = this.items.findIndex((u) => u.id == datas.data.id);
 
         if (index >= 0) {
@@ -88,7 +88,7 @@ const useBetStore = defineStore("bet-store", {
     async end() {
       const response = service.find && (await service.find(this.selected, {}));
       if (response.status === 200 || response.status === 201) {
-        const datas = response.data as BetModelResponse;
+        const datas = response.data as UserBetModelResponse;
         let index = this.items.findIndex((u) => u.id == datas.data.id);
 
         if (index >= 0) {
@@ -112,4 +112,4 @@ const useBetStore = defineStore("bet-store", {
   },
 });
 
-export default useBetStore;
+export default useUserBetStore;

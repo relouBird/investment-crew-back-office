@@ -23,23 +23,6 @@ export type ResetVerificationType = {
   otp: string;
 };
 
-type UserIdentity = {
-  identity_id: string;
-  id: string;
-  user_id: string;
-  identity_data: {
-    email: string;
-    email_verified: boolean;
-    phone_verified: boolean;
-    sub: string;
-  };
-  provider: string;
-  last_sign_in_at: string;
-  created_at: string;
-  updated_at: string;
-  email: string;
-};
-
 type NotificationsType = {
   email: boolean;
   push: boolean;
@@ -66,6 +49,23 @@ export type UserMetaData = {
   totalInvested: number;
   profitLoss: number;
   [key: string]: any; // Index signature pour permettre des propriétés supplémentaires
+};
+
+type UserIdentity = {
+  identity_id: string;
+  id: string;
+  user_id: string;
+  identity_data: {
+    email: string;
+    email_verified: boolean;
+    phone_verified: boolean;
+    sub: string;
+  };
+  provider: string;
+  last_sign_in_at: string;
+  created_at: string;
+  updated_at: string;
+  email: string;
 };
 
 export type User = {

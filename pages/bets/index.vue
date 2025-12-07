@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useBetStore from "~/stores/bet.store";
 import { LoaderAreas } from "~/constants";
-import type { BetModel } from "~/types/api-bet.type";
+import type { BetModel, UserBetModel } from "~/types/api-bet.type";
+import useUserBetStore from "~/stores/bet-users.store";
 
 definePageMeta({
   layout: "default",
@@ -10,6 +11,7 @@ definePageMeta({
 
 // // Stores
 const betStore = useBetStore();
+const userBetStore = useUserBetStore();
 
 const betsActive = computed(() => {
   let datas = betStore.getBets;
@@ -19,7 +21,7 @@ const betsActive = computed(() => {
     datas.forEach((bet) => {
       const now = new Date();
       const endDate = new Date(bet.end_at);
-      if (now < endDate) {
+      if (now < endDate && !bet.isEnded) {
         bets.push(bet);
       }
     });
@@ -38,13 +40,28 @@ const betsPast = computed(() => {
       const endDate = new Date(bet.end_at);
       if (now > endDate) {
         bets.push(bet);
+      } else if (bet.isEnded) {
+        bets.push(bet);
       }
     });
   }
 
   return bets;
 });
+
+const allBets = computed(() => {
+  let data: UserBetModel[] = [];
+  userBetStore.getUsersBets.forEach((bet) => {
+    if (bet.match.isEnded) {
+      data.push(bet);
+    }
+  });
+
+  return data;
+});
+
 const isLoading = ref<boolean>(false);
+const isEditing = ref<boolean>(false);
 const actions = ref<{ action: string; bet: BetModel | undefined }>({
   action: "",
   bet: undefined,
@@ -78,6 +95,7 @@ const loadBets = async () => {
   try {
     isLoading.value = true;
     await betStore.fetch();
+    await userBetStore.fetch();
   } catch (error) {
   } finally {
     isLoading.value = false;
@@ -93,6 +111,9 @@ watch(
   (newValue) => {
     if (newValue.action != "" && newValue.bet) {
       console.log("actions: ", newValue.action, ", bet-id: ", newValue.bet.id);
+      if (newValue.action == "update-session") {
+        isEditing.value = true;
+      }
       betStore.selected = newValue.bet;
     }
   }
@@ -163,36 +184,16 @@ watch(
         </v-window-item>
 
         <v-window-item value="users">
-          <v-card elevation="0" class="border border-opacity" rounded="lg">
-            <v-card-title class="font-montserrat"
-              >Historique des paris</v-card-title
-            >
-            <v-data-table
-              :headers="completedBetsHeaders"
-              :items="completedBets"
-              class="elevation-0"
-            >
-              <template v-slot:item.status="{ item }">
-                <v-chip
-                  :color="item.status === 'won' ? 'success' : 'error'"
-                  size="small"
-                >
-                  {{ item.status === "won" ? "Gagné" : "Perdu" }}
-                </v-chip>
-              </template>
-              <template v-slot:item.result="{ item }">
-                <span
-                  :class="item.status === 'won' ? 'text-success' : 'text-error'"
-                >
-                  {{ item.result }}
-                </span>
-              </template>
-            </v-data-table>
-          </v-card>
+          <bet-completed-items :bets="allBets" />
         </v-window-item>
       </v-window>
     </v-container>
 
     <BetDeleteDialog v-model:model-value="actions.action" />
+    <BetUpdateDialog
+      :bet-selected="actions.bet"
+      v-model:model-value="isEditing"
+      v-if="actions.bet"
+    />
   </ui-loader>
 </template>
