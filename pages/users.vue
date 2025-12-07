@@ -361,7 +361,13 @@ onMounted(async () => {
             <div class="d-flex align-center py-2">
               <v-avatar :color="getRandomColor()" class="me-3" size="40">
                 <span class="text-white font-weight-bold">
-                  {{ item.firstName.charAt(0) }}{{ item.lastName.charAt(0) }}
+                  {{
+                    (item.firstName + " " + item.lastName)
+                      .split(" ")
+                      .map((name) => name.charAt(0))
+                      .join("")
+                      .toUpperCase()
+                  }}
                 </span>
               </v-avatar>
               <div>
@@ -493,7 +499,7 @@ onMounted(async () => {
             <v-avatar :color="selectedUser.avatarColor" class="me-3">
               <span class="text-white font-weight-bold">
                 {{ selectedUser.firstName.charAt(0)
-                }}{{ selectedUser.lastName.charAt(0) }}
+                }}{{ String(selectedUser.lastName).charAt(0) }}
               </span>
             </v-avatar>
             {{ selectedUser.firstName }} {{ selectedUser.lastName }}

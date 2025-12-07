@@ -11,7 +11,7 @@ type NotificationType = {
  * Notifie le frontend en passant par le store (notificationStore)
  * @param message
  * @param color
- * @param config
+ * @param visible
  */
 export const notify = (
   options: NotificationType,

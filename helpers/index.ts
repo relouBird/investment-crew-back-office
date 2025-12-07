@@ -3,6 +3,16 @@ export const blank = (value: any) => {
   return Array.isArray(value) && value.length === 0;
 };
 
+export const isObject = (obj: any) =>
+  obj !== null && !!obj && typeof obj === "object" && !Array.isArray(obj);
+
+export const getIdForRequest = (
+  model: any,
+  primaryKey: string = "id"
+): number | string => {
+  return isObject(model) ? model[primaryKey] : model;
+};
+
 export const formatCurrency = (
   amount: number,
   isCurrency: boolean = true
@@ -59,7 +69,7 @@ export const formatAmount = (
   amount: any,
   options = {
     separator: "",
-    currency: "FCFA",
+    currency: "XAF",
   }
 ) => {
   let { currency, separator } = options;
@@ -118,6 +128,14 @@ export const formatDate = (
       month: "2-digit",
       year: "numeric",
     },
+    "DD/MM/YYYY HH:mm": {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    },
     "YYYY-MM-DD": {
       year: "numeric",
       month: "2-digit",
@@ -127,6 +145,10 @@ export const formatDate = (
       day: "numeric",
       month: "short",
       year: "numeric",
+    },
+    "DD MMM": {
+      day: "2-digit",
+      month: "short",
     },
     "DD MMM YY": {
       day: "numeric",
