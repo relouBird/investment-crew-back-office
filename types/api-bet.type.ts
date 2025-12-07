@@ -168,6 +168,18 @@ export interface BetModel {
   isEnded: boolean;
 }
 
+export interface UserBetModel {
+  id?: string;
+  uid: string;
+  matchId: string | number;
+  match: BetModel;
+  prediction: string;
+  win?: boolean;
+  potentialGain: number;
+  potentialLoss: number;
+  created_at?: string;
+}
+
 export interface BetModelResponse {
   message: string;
   data: BetModel;
@@ -176,4 +188,15 @@ export interface BetModelResponse {
 export interface BetsModelResponse {
   message: string;
   data: BetModel[];
+}
+
+
+export interface UserBetModelResponse {
+  message: string;
+  data: UserBetModel;
+}
+
+export interface UserBetsModelResponse {
+  message: string;
+  data: UserBetModel[];
 }

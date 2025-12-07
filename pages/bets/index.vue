@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useBetStore from "~/stores/bet.store";
 import { LoaderAreas } from "~/constants";
-import type { BetModel } from "~/types/api-bet.type";
+import type { BetModel, UserBetModel } from "~/types/api-bet.type";
+import useUserBetStore from "~/stores/bet-users.store";
 
 definePageMeta({
   layout: "default",
@@ -10,6 +11,7 @@ definePageMeta({
 
 // // Stores
 const betStore = useBetStore();
+const userBetStore = useUserBetStore();
 
 const betsActive = computed(() => {
   let datas = betStore.getBets;
@@ -46,6 +48,18 @@ const betsPast = computed(() => {
 
   return bets;
 });
+
+const allBets = computed(() => {
+  let data: UserBetModel[] = [];
+  userBetStore.getUsersBets.forEach((bet) => {
+    if (bet.match.isEnded) {
+      data.push(bet);
+    }
+  });
+
+  return data;
+});
+
 const isLoading = ref<boolean>(false);
 const isEditing = ref<boolean>(false);
 const actions = ref<{ action: string; bet: BetModel | undefined }>({
@@ -81,6 +95,7 @@ const loadBets = async () => {
   try {
     isLoading.value = true;
     await betStore.fetch();
+    await userBetStore.fetch();
   } catch (error) {
   } finally {
     isLoading.value = false;
@@ -169,32 +184,7 @@ watch(
         </v-window-item>
 
         <v-window-item value="users">
-          <v-card elevation="0" class="border border-opacity" rounded="lg">
-            <v-card-title class="font-montserrat"
-              >Historique des paris</v-card-title
-            >
-            <v-data-table
-              :headers="completedBetsHeaders"
-              :items="completedBets"
-              class="elevation-0"
-            >
-              <template v-slot:item.status="{ item }">
-                <v-chip
-                  :color="item.status === 'won' ? 'success' : 'error'"
-                  size="small"
-                >
-                  {{ item.status === "won" ? "Gagné" : "Perdu" }}
-                </v-chip>
-              </template>
-              <template v-slot:item.result="{ item }">
-                <span
-                  :class="item.status === 'won' ? 'text-success' : 'text-error'"
-                >
-                  {{ item.result }}
-                </span>
-              </template>
-            </v-data-table>
-          </v-card>
+          <bet-completed-items :bets="allBets" />
         </v-window-item>
       </v-window>
     </v-container>

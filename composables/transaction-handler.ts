@@ -63,12 +63,12 @@ const transactionComposable = (transactions: Ref<TransactionModel[]>) => {
   };
 
   const getAmountClass = (type: TRANSACTION_TYPE | string) => {
-    return type === TRANSACTION_TYPE.DEPOSIT || type === TRANSACTION_TYPE.GAIN
+    return type === TRANSACTION_TYPE.DEPOSIT || type === TRANSACTION_TYPE.LOSS
       ? "text-success"
       : "text-error";
   };
   const getAmountSign = (type: TRANSACTION_TYPE | string) => {
-    return type === TRANSACTION_TYPE.DEPOSIT || type === TRANSACTION_TYPE.GAIN
+    return type === TRANSACTION_TYPE.DEPOSIT || type === TRANSACTION_TYPE.LOSS
       ? "+ "
       : "- ";
   };
