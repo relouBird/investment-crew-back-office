@@ -3,11 +3,13 @@ import type { Emitter } from "mitt";
 import { notify } from "~/helpers/notifications";
 import useWalletService from "~/services/wallet.service";
 import type { EventsProps } from "~/types";
+import type { TransactionResponse } from "~/types/transaction.type";
 import type {
-  WalletTransactionInitResponse,
-  WalletModel,
   WalletResponse,
   RefillWalletType,
+  WalletModel,
+  WalletTransactionInitInterface,
+  WalletTransactionInitResponse,
 } from "~/types/wallet.type";
 
 type StateProps = {
@@ -46,8 +48,10 @@ const useWalletStore = defineStore("wallet-store", {
     async refillWallet(payload: RefillWalletType) {
       let proto_payload: RefillWalletType = {
         amount: payload.amount,
-        transaction_number: "+237670000000",
-        service: "cm.mtn",
+        // transaction_number: "+237670000000",
+        transaction_number: payload.transaction_number,
+        service: payload.service,
+        // service: "cm.mtn",
       };
       let response: AxiosResponse = await service.refill(proto_payload); // à remplacer par payload lors du build...
 
@@ -55,7 +59,7 @@ const useWalletStore = defineStore("wallet-store", {
         let data = response.data as WalletTransactionInitResponse;
         console.log("data-getted-message =>", data.message);
 
-        const {$emitter} = useNuxtApp();
+        const { $emitter } = useNuxtApp();
 
         $emitter.emit("payment:started", {
           id: data.data.transaction_id,
@@ -71,18 +75,20 @@ const useWalletStore = defineStore("wallet-store", {
     },
 
     async withDrawal(payload: RefillWalletType) {
-      let response: AxiosResponse = await service.withdrawal(payload);
+      let proto_payload: RefillWalletType = {
+        amount: payload.amount,
+        // transaction_number: "+237670000000",
+        transaction_number: payload.transaction_number,
+        // service: "cm.mtn",
+        service: payload.service,
+      };
+      console.log("DATA-TO-POST=========>", proto_payload);
+
+      let response: AxiosResponse = await service.withdrawal(proto_payload);
 
       if (response.status == 200 || response.status == 201) {
         let data = response.data as WalletTransactionInitResponse;
         console.log("data-getted-message =>", data.message);
-
-        const { $emitter } = useNuxtApp();
-
-        $emitter.emit("payment:started", {
-          id: data.data.transaction_id,
-          status: response.status,
-        });
       } else if (response.status == 500) {
         console.log("error =>", response.data);
       } else {
