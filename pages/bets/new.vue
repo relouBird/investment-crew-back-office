@@ -5,6 +5,17 @@ import type {  TeamModel } from "~/types/api-bet.type";
 // Stores
 const betApiStore = useBetApiStore();
 
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+useSeoHead({
+  title: "Créer un Pari",
+  subtitle: "Coin de création de paris sportifs",
+  forcePrefix: true,
+});
+
 // Valeurs réactives
 const competitions = computed(() => betApiStore.getCompetitions);
 const teams = computed(() => betApiStore.getTeams ?? []);

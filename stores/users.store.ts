@@ -1,3 +1,4 @@
+import type { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
 import useAuthService from "~/services/auth.service";
 import type { User, UserDetails } from "~/types/user.type";
@@ -28,7 +29,7 @@ const useUserStore = defineStore("users-store", {
   actions: {
     // Recuperer tous les utilisateurs...
     async fetch() {
-      const response = service.fetch && (await service.fetch({}));
+      const response: AxiosResponse = service.fetch && (await service.fetch({}));
 
       if (response.status === 200) {
         this.items = [];

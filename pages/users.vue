@@ -4,6 +4,18 @@ import { LoaderAreas } from "~/constants";
 import { formatDate, formatCurrency } from "~/helpers";
 import type { UserDetails } from "~/types/user.type";
 
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+// Meta tags
+useSeoHead({
+  title: "Gestion des Utilisateurs",
+  subtitle: "Gérez tous les utilisateurs de la plateforme d'investissement",
+  forcePrefix: true,
+});
+
 // Stores
 const userStore = useUserStore();
 

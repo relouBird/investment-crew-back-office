@@ -52,7 +52,7 @@ const useBetStore = defineStore("bet-store", {
 
     // Recuperer tous les paris...
     async fetch() {
-      const response = service.fetch && (await service.fetch({}));
+      const response: AxiosResponse = service.fetch && (await service.fetch({}));
       if (response.status === 200) {
         this.items = [];
         const datas = response.data as BetsModelResponse;
