@@ -23,3 +23,12 @@ export interface DatePropsInterface {
   start: TimeProps;
   end: TimeProps;
 }
+
+export type betRecapType = {
+  id : number | string;
+  homeTeam: string;
+  awayTeam: string;
+  totalBets: number;
+  totalAmount: number;
+  status: string;
+}

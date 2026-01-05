@@ -36,9 +36,6 @@ const user = ref<UserMetaData>(
 );
 user.value.name = user.value.firstName + " " + user.value.lastName;
 
-// Account data
-const accountBalance = ref(0);
-
 // Navigation items
 const navigationItems: NavigationItem[] = [
   { title: "Accueil", icon: "mdi-home", to: "/" },
@@ -245,29 +242,8 @@ watch(
 
       <v-spacer></v-spacer>
 
-      <!-- Simple Balance Box -->
-      <div class="balance-container">
-        <div
-          class="balance-box d-flex flex-row-reverse justify-end align-center"
-        >
-          <div class="d-flex pl-1">
-            <div class="balance-amount">
-              {{ formatBalance(accountBalance) }} &#x244;
-            </div>
-          </div>
-          <v-btn
-            icon="mdi-plus"
-            color="primary"
-            variant="flat"
-            size="x-small"
-            class="pa-0"
-            @click="showDepositDialog = true"
-          ></v-btn>
-        </div>
-      </div>
-
       <!-- Notifications -->
-      <v-btn icon variant="text" class="mr-2" @click="showNotifications = true">
+      <v-btn icon variant="text" class="mr-4" @click="showNotifications = true">
         <v-badge
           v-if="notificationCount > 0"
           :content="notificationCount"
