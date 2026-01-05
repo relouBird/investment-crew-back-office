@@ -9,6 +9,12 @@ definePageMeta({
   middleware: ["auth"],
 });
 
+useSeoHead({
+  title: "Mes Paris",
+  subtitle: "Tout vos paris sur notre plateforme",
+  forcePrefix: true,
+});
+
 // // Stores
 const betStore = useBetStore();
 const userBetStore = useUserBetStore();
@@ -68,27 +74,6 @@ const actions = ref<{ action: string; bet: BetModel | undefined }>({
 });
 
 const selectedTab = ref("active");
-
-const completedBetsHeaders = [
-  { title: "Match", key: "match" },
-  { title: "Prédiction", key: "prediction" },
-  { title: "Mise", key: "stake" },
-  { title: "Statut", key: "status" },
-  { title: "Résultat", key: "result" },
-  { title: "Date", key: "date" },
-];
-
-const completedBets = [
-  {
-    match: "PSG vs Real Madrid",
-    prediction: "PSG gagne",
-    stake: "€100",
-    status: "won",
-    result: "+€150",
-    date: "2024-07-18",
-  },
-  // ... more completed bets
-];
 
 // Méthodes...
 const loadBets = async () => {

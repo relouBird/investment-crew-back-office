@@ -50,7 +50,7 @@
       <v-row class="mb-6">
         <v-col
           cols="12"
-          md="4"
+          md="6"
           lg="3"
           v-for="balance in balanceSummary"
           :key="balance.title"
@@ -133,11 +133,6 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
-});
-
 import { LoaderAreas } from "~/constants";
 
 import {
@@ -149,6 +144,20 @@ import { formatCurrency, formatDate } from "~/helpers";
 import useTransactionStore from "~/stores/transaction.store";
 import { type TransactionModel } from "~/types/transaction.type";
 import transactionComposable from "~/composables/transaction-handler";
+
+
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+// Meta tags
+useSeoHead({
+  title: "Transactions",
+  subtitle: "Historique de vos transactions",
+  forcePrefix: true,
+});
+
 
 // Stores
 const transactionStore = useTransactionStore();
@@ -198,7 +207,7 @@ const balanceSummary = [
     color: "warning",
   },
   {
-    title: "Transactions échouées",
+    title: "Echouées",
     amount: transactionStats.value.totalFailed,
     icon: CircleXIcon,
     color: "error",
@@ -214,21 +223,6 @@ const transactionHeaders = [
 ];
 
 // Utilitaires pour l'affichage
-
-// Fonction pour filtrer les transactions
-const filteredTransactions = computed(() => {
-  if (!search.value) return transactions;
-
-  return transactions.value.filter(
-    (transaction) =>
-      transaction.description
-        .toLowerCase()
-        .includes(search.value.toLowerCase()) ||
-      transaction.type.toLowerCase().includes(search.value.toLowerCase()) ||
-      transaction.status.toLowerCase().includes(search.value.toLowerCase())
-  );
-});
-
 const loadTransactions = async () => {
   try {
     isLoading.value = true;
