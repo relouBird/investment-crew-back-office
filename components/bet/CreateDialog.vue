@@ -5,6 +5,7 @@ import { PercentageIcon } from "vue-tabler-icons";
 import type { DatePropsInterface } from "~/types";
 import { generateTime } from "~/helpers/bet-helper";
 import useBetStore from "~/stores/bet.store";
+import { useDisplay } from "vuetify";
 
 // Props
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const { smAndDown } = useDisplay();
 
 // Store
 const betStore = useBetStore();
@@ -210,10 +213,14 @@ watch(
           <div class="d-flex align-center justify-space-between">
             <!-- Équipe domicile -->
             <div class="text-center" style="flex: 1">
-              <v-avatar size="60" class="mb-2">
+              <v-avatar :size="smAndDown ? 35 : 60" class="mb-2">
                 <v-img :src="homeTeam.crest"></v-img>
               </v-avatar>
-              <div class="font-weight-bold">{{ homeTeam.name }}</div>
+              <div
+                :class="['font-weight-bold', smAndDown ? 'text-caption' : '']"
+              >
+                {{ homeTeam.name }}
+              </div>
               <div class="text-caption text-grey-darken-1">
                 {{ homeTeam.tla }}
               </div>
@@ -221,7 +228,10 @@ watch(
 
             <!-- VS -->
             <v-sheet
-              class="text-h5 font-weight-bold bg-transparent text-grey-darken-1 mx-4"
+              :class="[
+                'text-h5 font-weight-bold bg-transparent text-grey-darken-1',
+                smAndDown ? 'mx-1' : 'mx-4',
+              ]"
               max-width="200"
             >
               <v-otp-input
@@ -229,15 +239,20 @@ watch(
                 divider="VS"
                 length="2"
                 variant="outlined"
+                class=""
               ></v-otp-input>
             </v-sheet>
 
             <!-- Équipe extérieure -->
             <div class="text-center" style="flex: 1">
-              <v-avatar size="60" class="mb-2">
+              <v-avatar :size="smAndDown ? 35 : 60" class="mb-2">
                 <v-img :src="awayTeam.crest"></v-img>
               </v-avatar>
-              <div class="font-weight-bold">{{ awayTeam.name }}</div>
+              <div
+                :class="['font-weight-bold', smAndDown ? 'text-caption' : '']"
+              >
+                {{ awayTeam.name }}
+              </div>
               <div class="text-caption text-grey-darken-1">
                 {{ awayTeam.tla }}
               </div>

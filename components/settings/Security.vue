@@ -3,10 +3,10 @@ import useMeStore from "~/stores/me.store";
 import * as yup from "yup";
 
 const props = defineProps<{
-  modelTwoFactors: boolean;
+  modelValue: boolean;
 }>();
 
-const emit = defineEmits(["update:modelTwoFactors"]);
+const emit = defineEmits(["update:modelValue"]);
 
 // Composables
 const meStore = useMeStore();
@@ -20,7 +20,7 @@ const formChangePassword = useForm(
       .min(6, "Password is too weak")
       .matches(
         /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-        "Password must contains letters and numbers"
+        "Password must contains letters and numbers",
       )
       .required("Password is required"),
     new_password: yup
@@ -28,16 +28,21 @@ const formChangePassword = useForm(
       .min(6, "Password is too weak")
       .matches(
         /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-        "Password must contains letters and numbers"
+        "Password must contains letters and numbers",
       )
       .required("Password is required"),
     confirm_new_password: yup
       .string()
       .required()
       .oneOf([yup.ref("new_password")], "Not corresponding"),
-  })
+  }),
 );
 const loading = ref<boolean>(false);
+
+const twoFactors = computed({
+  get: () => props.modelValue,
+  set: (value) => emit("update:modelValue", value),
+});
 
 // Méthodes...
 const changePassword = async () => {
@@ -46,7 +51,7 @@ const changePassword = async () => {
   try {
     // do something...
     await formChangePassword.submit(
-      async () => await meStore.changePassword(formChangePassword.data)
+      async () => await meStore.changePassword(formChangePassword.data),
     );
 
     console.log("data-change-to =>", formChangePassword.data);
@@ -59,11 +64,6 @@ const changePassword = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const toggleTwoFactor = (enabled: boolean) => {
-  // Logic pour activer/désactiver 2FA
-  console.log("Two factor authentication:", enabled);
 };
 </script>
 
@@ -132,14 +132,10 @@ const toggleTwoFactor = (enabled: boolean) => {
       <div class="">
         <h3 class="text-h6 mb-3">Authentification à deux facteurs</h3>
         <v-switch
-          v-model="props.modelTwoFactors"
-          @update:model-value="
-            emit('update:modelTwoFactors', props.modelTwoFactors)
-          "
+          v-model="twoFactors"
           label="Activer l'authentification à deux facteurs"
           color="primary"
           :readonly="false"
-          @change="toggleTwoFactor"
         ></v-switch>
       </div>
     </v-card-text>

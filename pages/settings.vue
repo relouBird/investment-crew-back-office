@@ -55,6 +55,16 @@ const logout = async () => {
   await authStore.signOut();
   await meStore.clearMeData();
 };
+
+watch(
+  () => userSettings.value.twoFactorEnabled,
+  () => {
+    console.log(
+      "DATAS =>",
+      meStore.setMeData(userSettings.value, userSettings.value.email),
+    );
+  },
+);
 </script>
 
 <!-- pages/dashboard/settings.vue -->
@@ -69,7 +79,7 @@ const logout = async () => {
 
         <!-- Security Settings -->
         <settings-security
-          v-model:model-two-factors="userSettings.twoFactorEnabled"
+          v-model:model-value="userSettings.twoFactorEnabled"
         />
       </v-col>
 

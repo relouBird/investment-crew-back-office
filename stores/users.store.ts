@@ -1,7 +1,7 @@
 import type { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
 import useAuthService from "~/services/auth.service";
-import type { User, UserDetails } from "~/types/user.type";
+import type { User, UserDetails, UserMetaData } from "~/types/user.type";
 
 interface State {
   selected: UserDetails | null;
@@ -29,19 +29,35 @@ const useUserStore = defineStore("users-store", {
   actions: {
     // Recuperer tous les utilisateurs...
     async fetch() {
-      const response: AxiosResponse = service.fetch && (await service.fetch({}));
+      const response: AxiosResponse =
+        service.fetch && (await service.fetch({}));
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         this.items = [];
-        const datas = response.data as User[];
-        datas.forEach((user) => {
+        const datas = response.data.data as User[];
+        for (let i = 0; i < datas.length; i++) {
+          const user = datas[i];
           this.items.push({ ...user.user_metadata, ...user });
-        });
+        }
         this.count = this.items.length;
       } else {
         console.log("users-store =>", this.items);
       }
       return response;
+    },
+
+    async updateUserDetails(
+      usersData: Partial<UserDetails>,
+      user: UserMetaData,
+    ) {
+      const payloadToUse: UserMetaData = {
+        ...user,
+        ...usersData,
+      };
+
+      console.log("PAYLOAD-USER-ID ===>", payloadToUse);
+
+      return "";
     },
   },
 });

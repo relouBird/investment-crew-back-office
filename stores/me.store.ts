@@ -44,6 +44,7 @@ const useMeStore = defineStore("me-store", {
     setMeData(data: UserMetaData, email: string) {
       this.email = email;
       this.user = data;
+      return data;
     },
 
     async updateUserInfos(payload: UpdateInfosPayload) {
@@ -51,7 +52,15 @@ const useMeStore = defineStore("me-store", {
         ...(this.user as UserMetaData),
         ...payload,
       };
-      let response: AxiosResponse = await service.updateInfos(payloadToUse);
+
+      console.log("UPDATE-DATAS-TO-SEE===>", payloadToUse);
+
+      let response: AxiosResponse = await service.updateInfos({
+        ...payloadToUse,
+        phone: payload.phone == "" ? undefined : payload.phone,
+        status: undefined,
+        type: undefined,
+      });
 
       if (response.status == 200 || response.status == 201) {
         let data = response.data as MeResponse;

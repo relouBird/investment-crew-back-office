@@ -1,6 +1,7 @@
 import type { AxiosResponse } from "axios";
 import { request } from "~/helpers/request_axios";
 import type { ServiceProps } from "~/types/common.type";
+import type { UpdateInfosPayload } from "~/types/me.type";
 import type {
   LoginCredentialType,
   RegisterCredentialType,
@@ -128,11 +129,26 @@ export default function useAuthService(): ServiceProps {
     });
   };
 
+  /**
+   * Changer les credentials d"un utilisateur en tant qu'admin
+   */
+  const change = async (
+    user: string,
+    payload: UpdateInfosPayload,
+    query = {}
+  ): Promise<AxiosResponse> => {
+    return await request(`/admin/${user}/update-infos`, {
+      method: "post",
+      data: payload,
+    });
+  };
+
   return {
     register,
     login,
     logout,
     update,
+    change,
     verifyOTP,
     sendOTP,
     resendOTP,

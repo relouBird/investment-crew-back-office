@@ -52,7 +52,8 @@ const useUserBetStore = defineStore("users-bet-store", {
 
     // Recuperer tous les paris...
     async fetch() {
-      const response: AxiosResponse = service.fetch && (await service.fetch({}));
+      const response: AxiosResponse =
+        service.fetch && (await service.fetch({}));
       if (response.status === 200) {
         this.items = [];
         const datas = response.data as UserBetsModelResponse;
@@ -108,6 +109,14 @@ const useUserBetStore = defineStore("users-bet-store", {
 
       this.items = this.items.filter((item) => item.id != this.selected?.id);
       return response;
+    },
+
+    async setSelected(bet: UserBetModel) {
+      this.selected = bet;
+    },
+
+    async removeSelected() {
+      this.selected = null;
     },
   },
 });
