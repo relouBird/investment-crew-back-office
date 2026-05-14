@@ -6,15 +6,11 @@ import { aliases, mdi } from "vuetify/iconsets/mdi";
 import "@mdi/font/css/materialdesignicons.css";
 // @ts-ignore: Vuetify styles side-effect import has no type declarations
 import "vuetify/styles";
-// Import des pickers (si nécessaire)
-import { VTimePicker } from "vuetify/labs/components";
-import { lighten } from "vuetify/lib/util/colorUtils.mjs";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     components: {
       ...components,
-      VTimePicker,
     },
     directives,
     icons: {
@@ -30,6 +26,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           colors: {
             primary: "#1e3a8a",
+            muted: "#69707c",
           },
         },
       },

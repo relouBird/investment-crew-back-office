@@ -221,7 +221,7 @@ async function deleteBetClick(bet: UserBetModel) {
             <div class="bet-info-section mb-3">
               <div class="d-flex justify-space-between align-center mb-2">
                 <span class="text-caption text-grey-darken-1"
-                  >Votre pronostic:</span
+                  >Son pronostic:</span
                 >
                 <v-chip size="x-small" color="primary" variant="flat">
                   {{ getPredictionText(bet.prediction, bet.match) }}

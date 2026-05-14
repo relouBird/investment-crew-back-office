@@ -62,7 +62,7 @@ watch(
       };
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Activer le mode édition
@@ -96,7 +96,7 @@ const saveUser = async () => {
   // Émettre les données modifiées
   emit("save", localUser.value);
   isLoading.value = true;
-//   isEditing.value = false;
+  //   isEditing.value = false;
 };
 
 // Réinitialiser lors de la fermeture
@@ -107,43 +107,51 @@ const handleClose = () => {
 </script>
 
 <template>
-  <v-dialog v-model="dialogValue" max-width="900px" scrollable persistent>
+  <v-dialog v-model="dialogValue" max-width="750px" max-height="600px" scrollable persistent>
     <v-card v-if="localUser.id" rounded="lg" elevation="0">
       <!-- En-tête avec gradient -->
-      <div class="user-header pa-6">
+      <div class="user-header pa-3">
         <div class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
             <v-avatar
               :color="localUser.avatarColor"
-              size="80"
+              size="43"
               class="user-avatar"
             >
-              <span class="text-h4 text-white font-weight-bold">
+              <span class="text-white font-weight-bold">
                 {{ localUser.firstName?.charAt(0)
                 }}{{ String(localUser.lastName).charAt(0) }}
               </span>
             </v-avatar>
             <div class="ml-4">
-              <h2 class="text-h5 font-weight-bold text-white mb-1">
-                {{ localUser.firstName }} {{ localUser.lastName }}
-              </h2>
-              <v-chip
-                :color="getStatusColor(localUser.status || 'active')"
-                variant="flat"
-                size="small"
-                class="mb-2"
-              >
-                <v-icon start size="14">mdi-circle</v-icon>
-                {{ localUser.status }}
-              </v-chip>
+              <div class="d-flex align-center ga-2">
+                <h2 class="text-h6 font-weight-bold text-white">
+                  {{ localUser.firstName }} {{ localUser.lastName }}
+                </h2>
+                <v-chip
+                  :color="getStatusColor(localUser.status || 'active')"
+                  variant="flat"
+                  size="x-small"
+                  class=""
+                >
+                  <v-icon start size="14">mdi-circle</v-icon>
+                  <span class="">{{ localUser.status }}</span>
+                </v-chip>
+              </div>
               <div class="text-caption text-white opacity-90">
-                <CalendarIcon
-                  :size="14"
-                  class="mr-1"
-                  style="display: inline-block; vertical-align: middle"
-                />
-                Inscrit le
-                {{ formatDate(localUser.created_at || "", "DD MMMM YYYY") }}
+                <span>
+                  <CalendarIcon
+                    :size="14"
+                    class="mr-1 mb-1"
+                    style="display: inline-block; vertical-align: middle"
+                  />
+                </span>
+                <span
+                  >Inscrit le
+                  {{
+                    formatDate(localUser.created_at || "", "DD MMMM YYYY")
+                  }}</span
+                >
               </div>
             </div>
           </div>
@@ -178,7 +186,7 @@ const handleClose = () => {
                   ></v-text-field>
                   <div
                     v-else
-                    class="text-h5 font-weight-bold text-center"
+                    class="text-body-1 font-weight-bold text-center"
                     v-html="formatCurrency(localUser.balance || 0)"
                   ></div>
                 </div>
@@ -278,7 +286,7 @@ const handleClose = () => {
           </v-col> -->
         </v-row>
 
-        <v-divider class="my-4"></v-divider>
+        <v-divider class="my-2"></v-divider>
 
         <!-- Informations personnelles -->
         <div class="mb-4">
@@ -370,7 +378,7 @@ const handleClose = () => {
                 :model-value="
                   formatDate(
                     localUser.last_sign_in_at || '',
-                    'DD/MM/YYYY HH:mm'
+                    'DD/MM/YYYY HH:mm',
                   )
                 "
                 color="primary"
@@ -387,17 +395,16 @@ const handleClose = () => {
 
       <v-divider></v-divider>
 
-      <v-card-actions class="pa-4">
+      <v-card-actions class="pa-2">
         <v-spacer />
         <div v-if="!isEditing">
-          <v-btn variant="text" @click="handleClose" size="large">
-            Fermer
-          </v-btn>
+          <v-btn variant="text" @click="handleClose"> Fermer </v-btn>
           <v-btn
             color="primary"
             variant="flat"
             prepend-icon="mdi-pencil"
             class="ml-2"
+            size="small"
             @click="enableEdit"
           >
             Modifier

@@ -106,13 +106,13 @@ const deleteUser = (user: UserDetails) => {
 
     <!-- Balance -->
     <template v-slot:item.balance="{ item }">
-      <div class="font-weight-bold" v-html="formatCurrency(item.balance)"></div>
+      <div class="font-weight-bold text-no-wrap" v-html="formatCurrency(item.balance)"></div>
     </template>
 
     <!-- Total Invested -->
     <template v-slot:item.totalInvested="{ item }">
       <div
-        class="font-weight-medium text-success"
+        class="font-weight-medium text-success text-no-wrap"
         v-html="formatCurrency(item.totalInvested)"
       ></div>
     </template>
