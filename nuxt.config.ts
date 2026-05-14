@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 
   modules: [
     "@pinia/nuxt",
+    "@nuxt/fonts",
     (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
         // @ts-expect-error
@@ -14,6 +15,17 @@ export default defineNuxtConfig({
       });
     },
   ],
+
+  fonts: {
+    families: [
+      {
+        name: "Montserrat",
+        weights: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+        styles: ["normal", "italic"],
+        provider: "npm",
+      },
+    ],
+  },
 
   vite: {
     vue: {
@@ -34,20 +46,7 @@ export default defineNuxtConfig({
     head: {
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
-      link: [
-        { rel: "icon", type: "ico", href: "/favicon.ico" },
-        { rel: "preconnect", href: "https://fonts.googleapis.com" },
-        {
-          rel: "preconnect",
-          href: "https://fonts.gstatic.com",
-          crossorigin: "use-credentials",
-        },
-        {
-          rel: "stylesheet",
-          type: "text/css",
-          href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600&display=swap",
-        },
-      ],
+      link: [{ rel: "icon", type: "ico", href: "/favicon.ico" }],
     },
   },
 
@@ -57,7 +56,7 @@ export default defineNuxtConfig({
   ],
 
   // Ajoutez ceci si vous rencontrez des problèmes de SSR avec Vuetify
-  ssr: false,
+  ssr: true,
 
   compatibilityDate: "2025-05-28",
 

@@ -36,7 +36,13 @@ const useAuthStore = defineStore("auth-store", {
       expired_at: null,
       is_registrer: false,
     },
-  persist: true,
+  persist: {
+    storage: {
+      getItem: (key) => useCookie(key).value ?? null,
+      setItem: (key, value) => (useCookie(key).value = value),
+    },
+  },
+
   getters: {
     getIdentifier: (state) => state.identifier,
   },
