@@ -101,7 +101,7 @@ watch(
       }
       betStore.selected = newValue.bet;
     }
-  }
+  },
 );
 </script>
 
@@ -130,6 +130,7 @@ watch(
     </div>
 
     <v-container fluid class="pa-0" v-else>
+      <!-- Header Section -->
       <div class="mb-6">
         <v-row class="d-flex align-center justify-space-between flex-wrap">
           <!-- Titre -->

@@ -52,7 +52,8 @@ const useBetStore = defineStore("bet-store", {
 
     // Recuperer tous les paris...
     async fetch() {
-      const response: AxiosResponse = service.fetch && (await service.fetch({}));
+      const response: AxiosResponse =
+        service.fetch && (await service.fetch({}));
       if (response.status === 200) {
         this.items = [];
         const datas = response.data as BetsModelResponse;
@@ -69,7 +70,15 @@ const useBetStore = defineStore("bet-store", {
     // Recuperer tous les paris...
     async udpate() {
       const response =
-        service.update && (await service.update(this.selected, {}));
+        service.update &&
+        (await service.update(
+          {
+            ...this.selected,
+            created_at: undefined,
+            updated_at: undefined,
+          },
+          {},
+        ));
       if (response.status === 200 || response.status === 201) {
         const datas = response.data as BetModelResponse;
         let index = this.items.findIndex((u) => u.id == datas.data.id);

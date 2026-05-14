@@ -94,20 +94,6 @@ const useBetApiStore = defineStore("bet-api-store", {
       return response;
     },
 
-    // Recuperer tous les details d'un matchs...
-    async fetchMatchDetails(matchId: string) {
-      const response =
-        service.getCompetitions && (await service.getMatch(matchId, {}));
-
-      if (response.status === 200) {
-        const datas = response.data as ApiFootballMatchResponse;
-        this.selectedMatch = datas.data;
-      } else {
-        console.log("bet-api--match-store =>", this.competitions);
-      }
-      return response;
-    },
-
     // Selection une competition
     updateSelectedCompetition(competition: CompetitionModel) {
       this.selectedCompetition = competition;
