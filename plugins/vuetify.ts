@@ -30,6 +30,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           colors: {
             primary: "#1e3a8a",
+            muted: "#69707c",
           },
         },
       },

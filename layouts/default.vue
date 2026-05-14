@@ -208,10 +208,14 @@ onMounted(() => {
             variant="flat"
           >
             <template v-slot:prepend>
-              <v-icon>{{ item.icon }}</v-icon>
+              <component
+                :is="item.icon"
+                :color="$route.path === item.to ? 'primary' : '#9ca3af'"
+                size="24"
+              />
             </template>
-            <v-list-item-title v-if="drawer || $vuetify.display.smAndDown">
-              {{ item.title }}
+            <v-list-item-title class="pl-2" v-if="drawer || $vuetify.display.smAndDown">
+              <p :class="$route.path === item.to ? 'text-white' : 'text-muted'">{{ item.title }}</p>
             </v-list-item-title>
           </v-list-item>
         </v-list>
