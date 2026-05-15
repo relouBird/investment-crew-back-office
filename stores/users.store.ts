@@ -13,7 +13,12 @@ interface State {
 const service = useAuthService();
 
 const useUserStore = defineStore("users-store", {
-  persist: true,
+  persist: {
+    storage: {
+      getItem: (key) => useCookie(key).value ?? null,
+      setItem: (key, value) => (useCookie(key).value = value),
+    },
+  },
 
   state: (): State => ({
     selected: null,

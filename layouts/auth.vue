@@ -1,16 +1,14 @@
 <template>
-  <v-responsive class="scrooll">
-    <v-app class="bloc">
-      <v-row justify="center" class="pa-0" align="center">
-        <main>
-          <div class="full">
-            <img src="@/assets/images/logo.png" class="imagePage" alt="" />
-          </div>
-          <slot />
-        </main>
-      </v-row>
-    </v-app>
-  </v-responsive>
+  <v-app class="bloc">
+    <v-row justify="center" class="pa-0" align="center">
+      <main>
+        <div class="full">
+          <img src="@/assets/images/logo.png" class="imagePage" alt="" />
+        </div>
+        <slot />
+      </main>
+    </v-row>
+  </v-app>
 </template>
 
 <style scoped>
@@ -45,11 +43,10 @@ main {
   justify-content: center;
 }
 
-
 /* Mobile optimizations */
 @media (max-width: 650px) {
   main {
-    margin: 0 1.2em;
+    margin: 0 1.5em;
     padding: 1rem 1.2rem 1.5rem; /* Espace interne */
   }
 }

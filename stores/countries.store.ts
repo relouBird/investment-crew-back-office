@@ -8,7 +8,12 @@ interface State {
 }
 
 const useCountryStore = defineStore("use-countries-store", {
-  persist: true,
+  persist: {
+    storage: {
+      getItem: (key) => useCookie(key).value ?? null,
+      setItem: (key, value) => (useCookie(key).value = value),
+    },
+  },
 
   state: (): State => ({
     allCountries: [],
@@ -32,7 +37,7 @@ const useCountryStore = defineStore("use-countries-store", {
     async getAllCountries() {
       try {
         const response = await axios.get(
-          "https://restcountries.com/v3.1/subregion/Middle%20Africa"
+          "https://restcountries.com/v3.1/subregion/Middle%20Africa",
         );
 
         const countries: CountryType[] = response.data.map((country: any) => ({

@@ -85,9 +85,9 @@ onMounted(async () => {
       <div class="dashboard-container">
         <!-- En-tête -->
         <div class="mb-6">
-          <h2 class="text-h5 font-weight-bold mb-2">
+          <h1 class="text-h4 font-weight-bold mb-2">
             Bienvenue <span class="d-block d-sm-inline-block">Admin 👋</span>
-          </h2>
+          </h1>
           <p class="text-grey-darken-1">Voici un aperçu de votre plateforme</p>
         </div>
 
@@ -127,7 +127,6 @@ onMounted(async () => {
 <style scoped>
 .dashboard-container {
   padding: 24px;
-  padding-top: 16px;
   max-width: 1600px;
   margin: 0 auto;
 }
