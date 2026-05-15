@@ -6,11 +6,13 @@ import { aliases, mdi } from "vuetify/iconsets/mdi";
 import "@mdi/font/css/materialdesignicons.css";
 // @ts-ignore: Vuetify styles side-effect import has no type declarations
 import "vuetify/styles";
+import { VTimePicker } from "vuetify/labs/VTimePicker";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     components: {
       ...components,
+      VTimePicker
     },
     directives,
     icons: {
