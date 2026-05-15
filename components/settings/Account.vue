@@ -6,11 +6,6 @@ import * as yup from "yup";
 import useCountryStore from "~/stores/countries.store";
 import type { UpdateInfosPayload } from "~/types/me.type";
 
-definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
-});
-
 // Composables
 const meStore = useMeStore();
 const countriesStore = useCountryStore();

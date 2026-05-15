@@ -22,7 +22,12 @@ const useTransactionStore = defineStore("transaction-store", {
       selected: null,
       items: null,
     },
-  persist: true,
+  persist: {
+    storage: {
+      getItem: (key) => useCookie(key).value ?? null,
+      setItem: (key, value) => (useCookie(key).value = value),
+    },
+  },
   getters: {
     getTransactions: (state) => state.items,
     getSelected: (state) => state.selected,
