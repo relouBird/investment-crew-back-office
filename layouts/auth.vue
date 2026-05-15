@@ -1,13 +1,15 @@
 <template>
   <v-app class="bloc">
-    <v-row justify="center" class="pa-0" align="center">
-      <main>
-        <div class="full">
-          <img src="@/assets/images/logo.png" class="imagePage" alt="" />
-        </div>
-        <slot />
-      </main>
-    </v-row>
+    <ClientOnly>
+      <v-row justify="center" class="pa-0" align="center">
+        <main>
+          <div class="full">
+            <img src="@/assets/images/logo.png" class="imagePage" alt="" />
+          </div>
+          <slot />
+        </main>
+      </v-row>
+    </ClientOnly>
   </v-app>
 </template>
 
