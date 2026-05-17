@@ -58,9 +58,7 @@ const betsPast = computed(() => {
 const allBets = computed(() => {
   let data: UserBetModel[] = [];
   userBetStore.getUsersBets.forEach((bet) => {
-    if (bet.match.isEnded) {
-      data.push(bet);
-    }
+    data.push(bet);
   });
 
   return data;

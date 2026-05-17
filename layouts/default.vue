@@ -4,7 +4,6 @@ import {
   CreditCardIcon,
   Home2Icon,
   Settings2Icon,
-  SettingsCogIcon,
   UsersGroupIcon,
   type TablerIconComponent,
 } from "vue-tabler-icons";
@@ -170,7 +169,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-app class="">
+  <v-app>
     <ClientOnly>
       <!-- Desktop Sidebar -->
       <v-navigation-drawer
@@ -349,40 +348,7 @@ onMounted(() => {
       </v-bottom-navigation>
 
       <!-- Deposit Dialog -->
-      <v-dialog v-model="showDepositDialog" max-width="400px">
-        <v-card elevation="0">
-          <v-card-title class="text-h6 font-montserrat"
-            >Effectuer un dépôt</v-card-title
-          >
-          <v-card-text>
-            <v-text-field
-              v-model="depositAmount"
-              label="Montant"
-              type="number"
-              prefix="&#x244;"
-              variant="outlined"
-              color="primary"
-              class="mb-4"
-            ></v-text-field>
-            <v-select
-              v-model="depositMethod"
-              :items="paymentMethods"
-              label="Méthode de paiement"
-              variant="outlined"
-              color="primary"
-            ></v-select>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="showDepositDialog = false" variant="text">
-              Annuler
-            </v-btn>
-            <v-btn @click="processDeposit" color="primary" variant="flat">
-              Déposer
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <wallets-deposit-dialog v-model:model-value="showDepositDialog" />
 
       <!-- Notifications Dialog -->
       <v-dialog v-model="showNotifications" max-width="500px">

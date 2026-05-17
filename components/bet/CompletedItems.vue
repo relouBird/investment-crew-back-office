@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
 import { formatCurrency, formatDate } from "~/helpers";
+import Bets from "~/pages/users/[id]/bets.vue";
 import type { UserBetModel } from "~/types/api-bet.type";
 
 type StateType = {
@@ -47,6 +48,10 @@ const getColorByWinnerState = (winner?: boolean) => {
     return "info";
   }
 };
+
+onMounted(() => {
+  console.log("DATA =>", props.bets.length);
+});
 </script>
 <template>
   <v-card elevation="0" class="border border-opacity" rounded="lg">

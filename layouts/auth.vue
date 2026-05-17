@@ -24,8 +24,8 @@
   background: #f0f2f5;
   padding: none !important;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .imagePage {
