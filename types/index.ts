@@ -1,3 +1,10 @@
+export type SeoMetaOptions = {
+  title?: string | null;
+  subtitle?: string | null;
+  description?: string | null;
+  forcePrefix?: boolean;
+}
+
 // Définition des types d'événements (optionnel, mais recommandé)
 export type EventPayment = {
   id: string;

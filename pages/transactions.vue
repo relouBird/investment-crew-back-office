@@ -31,7 +31,12 @@
 
           <!-- Boutons -->
           <v-col cols="12" md="6" class="d-flex justify-end flex-wrap">
-            <v-btn color="primary" class="mr-2" prepend-icon="mdi-plus">
+            <v-btn
+              color="primary"
+              class="mr-2"
+              prepend-icon="mdi-plus"
+              @click="showDepositDialog = true"
+            >
               Dépôt
             </v-btn>
             <v-btn
@@ -39,6 +44,7 @@
               variant="outlined"
               class=""
               prepend-icon="mdi-minus"
+              @click="showWithdrawalDialog = true"
             >
               Retrait
             </v-btn>
@@ -128,6 +134,10 @@
           </template>
         </v-data-table>
       </v-card>
+
+      <!-- Deposit Dialog -->
+      <wallets-deposit-dialog v-model:model-value="showDepositDialog" />
+      <wallets-withdrawal-dialog v-model:model-value="showWithdrawalDialog" />
     </v-container>
   </ui-loader>
 </template>
@@ -137,14 +147,19 @@ import { LoaderAreas } from "~/constants";
 
 import {
   CreditCardIcon,
-  ClockExclamationIcon,
   CircleXIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
+  Receipt2Icon,
 } from "vue-tabler-icons";
 import { formatCurrency, formatDate } from "~/helpers";
-import useTransactionStore from "~/stores/transaction.store";
-import { type TransactionModel } from "~/types/transaction.type";
+import {
+  type AdminTransactionStats,
+  type EvolutionData,
+  type TransactionModel,
+} from "~/types/transaction.type";
 import transactionComposable from "~/composables/transaction-handler";
-
+import useWalletStore from "~/stores/wallet.store";
 
 definePageMeta({
   layout: "default",
@@ -158,24 +173,33 @@ useSeoHead({
   forcePrefix: true,
 });
 
-
 // Stores
-const transactionStore = useTransactionStore();
+const walletStore = useWalletStore();
 
 // Valeurs réactives...
 const transactions = computed(() =>
-  transactionStore.getTransactions
-    ? transactionStore.getTransactions
-    : ([] as TransactionModel[])
+  walletStore.getStatitics?.transactions
+    ? walletStore.getStatitics.transactions
+    : ([] as TransactionModel[]),
+);
+const balance = computed(() => walletStore.getStatitics?.balance ?? 0);
+
+const evolution = computed(() =>
+  walletStore.getStatitics?.evolution
+    ? walletStore.getStatitics.evolution
+    : ({} as EvolutionData),
+);
+const transactionStats = computed(() =>
+  walletStore.getStatitics?.transactionStats
+    ? walletStore.getStatitics.transactionStats
+    : ({} as AdminTransactionStats),
 );
 const isLoading = ref<boolean>(false);
 const search = ref("");
+const showDepositDialog = ref(false);
+const showWithdrawalDialog = ref(false);
 
 const {
-  // Montants
-  balance,
-  transactionStats,
-  evolution,
   // Getters
   getTransactionColor,
   getTransactionIcon,
@@ -184,7 +208,7 @@ const {
   getAmountSign,
   getStatusColor,
   getStatusLabel,
-} = transactionComposable(transactions);
+} = transactionComposable();
 
 const balanceSummary = [
   {
@@ -194,21 +218,21 @@ const balanceSummary = [
     color: "primary",
   },
   {
-    title: "Evolution",
-    amount: evolution.value.amount,
-    icon: evolution.value.icon,
-    color: evolution.value.color,
-    percentage: evolution.value.percentage,
-  },
-  {
-    title: "En attente",
-    amount: transactionStats.value.totalPending,
-    icon: ClockExclamationIcon,
+    title: "Total Déposé",
+    amount: transactionStats.value.totalDeposits,
+    icon: Receipt2Icon,
     color: "warning",
   },
   {
-    title: "Echouées",
-    amount: transactionStats.value.totalFailed,
+    title: "Gains sur Match",
+    amount: transactionStats.value.totalWins,
+    icon: evolution.value.digit >= 0 ? TrendingUpIcon : TrendingDownIcon,
+    color: evolution.value.digit >= 0 ? "success" : "error",
+    percentage: evolution.value.percentage,
+  },
+  {
+    title: "Perte sur Match",
+    amount: transactionStats.value.totalLoss,
     icon: CircleXIcon,
     color: "error",
   },
@@ -226,7 +250,7 @@ const transactionHeaders = [
 const loadTransactions = async () => {
   try {
     isLoading.value = true;
-    await transactionStore.fetch();
+    await walletStore.getSummaryWalletData();
   } catch (e) {
   } finally {
     isLoading.value = false;

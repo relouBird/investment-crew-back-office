@@ -20,6 +20,8 @@ export interface RefillWalletType {
 
 export interface WalletTransactionInitInterface extends RefillWalletType {
   transaction_id: string;
+  wallet: WalletModel;
+  transaction_details: TransferResponse;
 }
 
 export interface WalletResponse {
@@ -31,3 +33,61 @@ export interface WalletTransactionInitResponse {
   message: string;
   data: WalletTransactionInitInterface;
 }
+
+
+//---------------------------------------
+//--------------NOTCHPAY-----------------
+//---------------------------------------
+
+export type TransferResponse = {
+  status: string;
+  message: string;
+  code: number;
+  transfer: Transfer;
+};
+
+export type Transfer = {
+  amount: number;
+  amount_total: number;
+  fee: number;
+  converted_amount: number;
+  business: Business;
+  beneficiary: Beneficiary;
+  description: string;
+  reference: string;
+  status: string;
+  currency: string;
+  initiated_at: string;
+  updated_at: string;
+};
+
+export type Business = {
+  id: string;
+  country: string;
+  email: string;
+  phone: string;
+  poster: null | string;
+  name: string;
+};
+
+export type Beneficiary = {
+  id: string;
+  phone: string;
+  name: null | string;
+  email: null | string;
+  country: string;
+  channel: Channel;
+  receiver: Receiver;
+};
+
+export type Channel = {
+  name: string;
+  type: string;
+  id: TransferChannel;
+};
+
+export type TransferChannel = Exclude<PAYMENT_METHOD, "card">;
+
+export type Receiver = {
+  number: string;
+};

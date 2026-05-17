@@ -3,14 +3,17 @@ import type { Emitter } from "mitt";
 import useTransactionService from "~/services/transaction.service";
 import type { EventsProps } from "~/types";
 import type {
+  TransactionCheckResponse,
   TransactionModel,
   TransactionResponse,
   TransactionsResponse,
 } from "~/types/transaction.type";
+import type { WalletModel } from "~/types/wallet.type";
 
 type StateProps = {
   selected: TransactionModel | null;
   items: TransactionModel[] | null;
+  partialWallet: WalletModel | null;
 };
 
 // le service qui gère les requetes
@@ -21,6 +24,7 @@ const useTransactionStore = defineStore("transaction-store", {
     <StateProps>{
       selected: null,
       items: null,
+      partialWallet: null,
     },
   persist: {
     storage: {
@@ -54,9 +58,10 @@ const useTransactionStore = defineStore("transaction-store", {
         service.find && (await service.find(product, query));
 
       if (response.status == 200 || response.status == 201) {
-        let data = response.data as TransactionResponse;
+        let data = response.data as TransactionCheckResponse;
         console.log("data-getted-message =>", data.message);
-        this.selected = data.data;
+        this.selected = data.transaction;
+        this.partialWallet = data.wallet;
       } else if (response.status == 500) {
         console.log("error =>", response.data);
       } else {
