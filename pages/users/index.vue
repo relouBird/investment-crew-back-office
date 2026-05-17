@@ -196,7 +196,7 @@ onMounted(async () => {
 
       <!-- Stats Cards -->
       <v-row class="mb-6">
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="6" lg="3">
           <v-card
             class="pa-4 border-sm border-opacity"
             elevation="0"
@@ -215,7 +215,7 @@ onMounted(async () => {
             </div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="6" lg="3">
           <v-card
             class="pa-4 border-sm border-opacity"
             elevation="0"
@@ -236,7 +236,7 @@ onMounted(async () => {
             </div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="6" lg="3">
           <v-card
             class="pa-4 border-sm border-opacity"
             elevation="0"
@@ -255,7 +255,7 @@ onMounted(async () => {
             </div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="6" lg="3">
           <v-card
             class="pa-4 border-sm border-opacity"
             elevation="0"

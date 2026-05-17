@@ -1,14 +1,30 @@
 import type { AxiosResponse } from "axios";
 import { request } from "~/helpers/request_axios";
 import type { ServiceProps } from "~/types/common.type";
+import type { AdminTransactionComposableResult } from "~/types/transaction.type";
 import type { RefillWalletType } from "~/types/wallet.type";
 
-export default function useWalletService(): ServiceProps {
+export type AssignationServiceProps = ServiceProps & {
+  /**Recuperer les details juste sur le portefeuille de la personne */
+  fetchSummary: () => Promise<AxiosResponse<AdminTransactionComposableResult>>;
+  check: (id: string) => Promise<AxiosResponse>;
+};
+
+export default function useWalletService(): AssignationServiceProps {
   /**
    * Recuperer juste le portefeuille de la personne...
    */
   const fetch = async (): Promise<AxiosResponse> => {
-    return await request(`/wallets`, {
+    return await request(`/admin/wallets`, {
+      method: "get",
+    });
+  };
+
+  /**
+   * Recuperer les details juste sur le portefeuille de la personne...
+   */
+  const fetchSummary = async (): Promise<AxiosResponse> => {
+    return await request(`/admin/wallets/summary`, {
       method: "get",
     });
   };
@@ -17,7 +33,7 @@ export default function useWalletService(): ServiceProps {
    * Recuperer juste le portefeuille de la personne...
    */
   const refill = async (payload: RefillWalletType): Promise<AxiosResponse> => {
-    return await request(`/wallets/refill-account`, {
+    return await request(`/admin/wallets/refill-account`, {
       method: "post",
       data: payload,
     });
@@ -27,12 +43,21 @@ export default function useWalletService(): ServiceProps {
    * Recuperer juste le portefeuille de la personne...
    */
   const withdrawal = async (
-    payload: RefillWalletType
+    payload: RefillWalletType,
   ): Promise<AxiosResponse> => {
-    return await request(`/wallets/withdraw-account`, {
+    return await request(`/admin/wallets/withdraw-account`, {
       method: "post",
       data: payload,
     });
   };
-  return { fetch, refill, withdrawal };
+
+  /**
+   * Permet de checker l'etat d'une transaction...
+   */
+  const check = async (id: string): Promise<AxiosResponse> => {
+    return await request(`/admin/wallet/check-transaction/${id}`, {
+      method: "get",
+    });
+  };
+  return { fetch, fetchSummary, refill, withdrawal, check };
 }

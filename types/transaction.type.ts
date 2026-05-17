@@ -42,3 +42,40 @@ export interface TransactionCheckResponse {
   wallet: WalletModel;
   transaction: TransactionModel;
 }
+
+// -----------------------COMPOSABLE-----------------------//
+
+// Type pour les statistiques de transactions
+export interface AdminTransactionStats extends TransactionStats {
+  totalWithdraws: number;
+  totalLoss: number;
+}
+export interface TransactionStats {
+  totalDeposits: number;
+  totalWins: number;
+  totalPending: number;
+  totalFailed: number;
+}
+
+// Type pour l'évolution
+export interface EvolutionData {
+  digit: number;
+  amount: string; // car .toFixed(2) retourne une chaîne
+  percentage: string; // car .toFixed(1) + '%' retourne une chaîne
+  isPositive: boolean;
+}
+
+// Type principal du retour
+export interface TransactionComposableResponse {
+  balance: number; // solde du wallet
+  transactionStats: TransactionStats;
+  evolution: EvolutionData;
+  transactions: TransactionModel[];
+}
+
+export interface AdminTransactionComposableResult {
+  balance: number; // solde du wallet
+  transactionStats: AdminTransactionStats;
+  evolution: EvolutionData;
+  transactions: TransactionModel[];
+}

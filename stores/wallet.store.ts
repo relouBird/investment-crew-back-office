@@ -1,19 +1,21 @@
 import type { AxiosResponse } from "axios";
-import type { Emitter } from "mitt";
-import { notify } from "~/helpers/notifications";
 import useWalletService from "~/services/wallet.service";
-import type { EventsProps } from "~/types";
-import type { TransactionResponse } from "~/types/transaction.type";
+import type {
+  AdminTransactionComposableResult,
+  TransactionCheckResponse,
+  TransactionModel,
+} from "~/types/transaction.type";
 import type {
   WalletResponse,
   RefillWalletType,
   WalletModel,
-  WalletTransactionInitInterface,
   WalletTransactionInitResponse,
 } from "~/types/wallet.type";
 
 type StateProps = {
   wallet: WalletModel | null;
+  selectedTransaction: TransactionModel | null;
+  statistic: AdminTransactionComposableResult | null;
 };
 
 // le service qui gère les requetes
@@ -23,6 +25,8 @@ const useWalletStore = defineStore("wallet-store", {
   state: () =>
     <StateProps>{
       wallet: null,
+      selectedTransaction: null,
+      statistic: null,
     },
   persist: {
     storage: {
@@ -32,6 +36,7 @@ const useWalletStore = defineStore("wallet-store", {
   },
   getters: {
     getWallet: (state) => state.wallet,
+    getStatitics: (state) => state.statistic,
   },
   actions: {
     async getWalletData() {
@@ -50,13 +55,29 @@ const useWalletStore = defineStore("wallet-store", {
       return response;
     },
 
+    async getSummaryWalletData() {
+      let response = service.fetchSummary && (await service.fetchSummary());
+
+      if (response.status == 200 || response.status == 201) {
+        let data = response.data;
+        console.log("data-getted-user-balance =>", data.balance);
+        this.statistic = data;
+      } else if (response.status == 500) {
+        console.log("error =>", response.data);
+      } else {
+        console.log("error =>", response.data);
+      }
+
+      return response;
+    },
+
     async refillWallet(payload: RefillWalletType) {
       let proto_payload: RefillWalletType = {
-        amount: payload.amount,
-        // transaction_number: "+237670000000",
-        transaction_number: payload.transaction_number,
-        service: payload.service,
-        // service: "cm.mtn",
+        amount: Number(payload.amount),
+        transaction_number: "+237670000000",
+        // transaction_number: payload.transaction_number,
+        service: "cm.mtn",
+        // service: payload.service,
       };
       let response: AxiosResponse = await service.refill(proto_payload); // à remplacer par payload lors du build...
 
@@ -81,11 +102,11 @@ const useWalletStore = defineStore("wallet-store", {
 
     async withDrawal(payload: RefillWalletType) {
       let proto_payload: RefillWalletType = {
-        amount: payload.amount,
-        // transaction_number: "+237670000000",
-        transaction_number: payload.transaction_number,
-        // service: "cm.mtn",
-        service: payload.service,
+        amount: Number(payload.amount),
+        transaction_number: "+237670000000",
+        // transaction_number: payload.transaction_number,
+        service: "cm.mtn",
+        // service: payload.service,
       };
       console.log("DATA-TO-POST=========>", proto_payload);
 
@@ -93,6 +114,7 @@ const useWalletStore = defineStore("wallet-store", {
 
       if (response.status == 200 || response.status == 201) {
         let data = response.data as WalletTransactionInitResponse;
+        this.wallet = data.data.wallet;
         console.log("data-getted-message =>", data.message);
       } else if (response.status == 500) {
         console.log("error =>", response.data);
@@ -101,6 +123,22 @@ const useWalletStore = defineStore("wallet-store", {
       }
 
       return response;
+    },
+
+    async find(product: string, query = {}) {
+      const response: AxiosResponse =
+        service.check && (await service.check(product));
+
+      if (response.status == 200 || response.status == 201) {
+        let data = response.data as TransactionCheckResponse;
+        console.log("data-getted-message =>", data.message);
+        this.wallet = data.wallet;
+        this.selectedTransaction = data.transaction;
+      } else if (response.status == 500) {
+        console.log("error =>", response.data);
+      } else {
+        console.log("error =>", response.data);
+      }
     },
   },
 });

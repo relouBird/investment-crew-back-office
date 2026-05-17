@@ -10,6 +10,7 @@ import {
   WalletIcon,
   TrendingUpIcon,
 } from "vue-tabler-icons";
+import BuildButton from "../ui/BuildButton.vue";
 
 interface Props {
   modelValue: boolean;
@@ -107,7 +108,13 @@ const handleClose = () => {
 </script>
 
 <template>
-  <v-dialog v-model="dialogValue" max-width="750px" max-height="600px" scrollable persistent>
+  <v-dialog
+    v-model="dialogValue"
+    max-width="750px"
+    max-height="600px"
+    scrollable
+    persistent
+  >
     <v-card v-if="localUser.id" rounded="lg" elevation="0">
       <!-- En-tête avec gradient -->
       <div class="user-header pa-3">
@@ -289,60 +296,66 @@ const handleClose = () => {
         <v-divider class="my-2"></v-divider>
 
         <!-- Informations personnelles -->
-        <div class="mb-4">
+        <div class="mb-0">
           <h3 class="text-h6 font-weight-bold mb-4">
             Informations personnelles
           </h3>
           <v-row>
             <v-col cols="12" md="6">
               <!-- Prénom -->
-              <v-text-field
+              <BuildButton
                 v-model="localUser.firstName"
                 color="primary"
                 label="Prénom"
                 variant="outlined"
-                prepend-inner-icon="mdi-account"
+                density="compact"
                 class="mb-3"
                 :readonly="!isEditing"
-                :bg-color="!isEditing ? 'grey-lighten-4' : 'white'"
-              ></v-text-field>
+                :bg-color="!isEditing"
+                :icon="UserIcon"
+              />
 
               <!-- Nom -->
-              <v-text-field
+              <BuildButton
                 v-model="localUser.lastName"
                 color="primary"
                 label="Nom"
                 variant="outlined"
-                prepend-inner-icon="mdi-account"
+                density="compact"
                 class="mb-3"
                 :readonly="!isEditing"
-                :bg-color="!isEditing ? 'grey-lighten-4' : 'white'"
-              ></v-text-field>
+                :bg-color="!isEditing"
+                :icon="UserIcon"
+              />
 
               <!-- Email -->
-              <v-text-field
+              <BuildButton
                 v-model="localUser.email"
                 color="primary"
                 label="Email"
                 type="email"
                 variant="outlined"
-                prepend-inner-icon="mdi-email"
+                density="compact"
                 class="mb-3"
                 :readonly="!isEditing"
-                :bg-color="!isEditing ? 'grey-lighten-4' : 'white'"
-              ></v-text-field>
+                :bg-color="!isEditing"
+                :icon="MailIcon"
+              />
 
               <!-- Téléphone -->
-              <v-text-field
+              <BuildButton
                 v-model="localUser.phone"
                 color="primary"
                 label="Téléphone"
+                type="number"
                 variant="outlined"
-                prepend-inner-icon="mdi-phone"
+                density="compact"
                 placeholder="6 XXX XXX XXX"
+                class=""
                 :readonly="!isEditing"
-                :bg-color="!isEditing ? 'grey-lighten-4' : 'white'"
-              ></v-text-field>
+                :bg-color="!isEditing"
+                :icon="PhoneIcon"
+              />
             </v-col>
 
             <v-col cols="12" md="6">
@@ -353,6 +366,7 @@ const handleClose = () => {
                 :items="statusOptions"
                 label="Statut du compte"
                 variant="outlined"
+                density="compact"
                 prepend-inner-icon="mdi-shield-check"
                 class="mb-3"
                 :readonly="!isEditing"
@@ -367,6 +381,7 @@ const handleClose = () => {
                 color="primary"
                 label="Date d'inscription"
                 variant="outlined"
+                density="compact"
                 prepend-inner-icon="mdi-calendar"
                 readonly
                 bg-color="grey-lighten-4"
@@ -384,6 +399,7 @@ const handleClose = () => {
                 color="primary"
                 label="Dernière connexion"
                 variant="outlined"
+                density="compact"
                 prepend-inner-icon="mdi-clock-outline"
                 readonly
                 bg-color="grey-lighten-4"

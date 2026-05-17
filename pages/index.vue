@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import useUserBetStore from "~/stores/bet-users.store";
 import useBetStore from "~/stores/bet.store";
-import useSponsoringStore from "~/stores/sponsoring.store";
-import useTransactionStore from "~/stores/transaction.store";
+// import useSponsoringStore from "~/stores/sponsoring.store";
 import useUserStore from "~/stores/users.store";
 import useWalletStore from "~/stores/wallet.store";
 
@@ -24,8 +23,7 @@ useSeoHead({
 //store
 const walletStore = useWalletStore();
 const userStore = useUserStore();
-const transactionStore = useTransactionStore();
-const sponsoringStore = useSponsoringStore();
+// const sponsoringStore = useSponsoringStore();
 const betStore = useBetStore();
 const userBetStore = useUserBetStore();
 
@@ -38,7 +36,7 @@ onMounted(async () => {
     userStore.fetch(),
     betStore.fetch(),
     userBetStore.fetch(),
-    transactionStore.fetch(),
+    walletStore.getSummaryWalletData(),
   ])
     .then((values) => {
       console.log(values);
